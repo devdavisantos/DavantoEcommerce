@@ -1,0 +1,32 @@
+services:
+  mysql:
+    image: mysql:8
+    container_name: lastore-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./Database/mysql_data:/var/lib/mysql
+
+  backend:
+    build: ./LaStore/LaStoreAPI
+    container_name: lastore-api
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mysql;Port=3306;Database=${MYSQL_DATABASE};User=root;Password=${MYSQL_ROOT_PASSWORD};
+    ports:
+      - "5000:8080"
+
+  frontend:
+    build: ./Sistema
+    container_name: lastore-front
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
