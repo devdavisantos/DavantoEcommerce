@@ -10,6 +10,7 @@ services:
       - "3306:3306"
     volumes:
       - ./Database/mysql_data:/var/lib/mysql
+      - ./Database/init:/docker-entrypoint-initdb.d
 
   backend:
     build: ./LaStore/LaStoreAPI
@@ -23,10 +24,10 @@ services:
       - "5000:8080"
 
   frontend:
-    build: ./Sistema
+    build: ./system
     container_name: lastore-front
     restart: always
     depends_on:
       - backend
     ports:
-      - "3000:80"
+      - "3000:3000"
