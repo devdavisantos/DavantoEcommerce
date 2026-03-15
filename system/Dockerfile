@@ -3,10 +3,12 @@ FROM node:20
 WORKDIR /app
 
 RUN npm install -g pnpm
+RUN npm install
+RUN pnpm add next react react-dom
+RUN pnpm add lucide-react
+RUN pnpm add react-country-flag
 
 COPY . .
-
-RUN npm install --shamefully-hoist
 
 COPY package.json pnpm-lock.yaml ./
 

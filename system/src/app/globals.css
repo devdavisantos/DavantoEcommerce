@@ -3,6 +3,20 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --headergroud: #1A1D23;
+  --searchground: #31363F;
+  --searchbutton: linear-gradient(
+    to bottom right,
+    #FA7918,
+    #FEA22F
+  );
+  --searchbuttonhover: linear-gradient(
+    to bottom right,
+    #ff923e,
+    #ffbd6b
+  );
+  --menubutton: #272C34;
+  --orangecolor: #EC6F16;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,8 +42,8 @@ body {
 
 * {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+  /* padding: 0; */
+  /* margin: 0; */
 }
 
 a {

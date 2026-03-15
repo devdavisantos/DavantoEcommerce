@@ -1,46 +1,52 @@
 import Logo from "@/components/ui/Logo";
+import SearchBar from "@/components/ui/SearchBar";
+import { User, Heart, ShoppingCart, MapPin, ChevronDown, Menu } from "@/components/icons/icons";
+import LanguageOption from "@/components/icons/flags";
 
 export default function Header() {
   return (
-      <header className="w-full bg-[#131921] text-white py-3 px-4 shadow-md border-b border-black">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-6">
-
+      <header className="fixed w-full h-20 bg-[var(--headerground)] px-4 shadow-md border-b border-black flex justify-start">
+        <div className="max-w-7xl flex items-center justify-between gap-8 ml-14">
           <Logo width={170}/>
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-1">
+              <MapPin className="text-[var(--orangecolor)]"/>
+              <div>
+                <p className="text-xs text-gray-300">Deliver to</p>
+                <span className="font-bold">Update location</span>
+              </div>
+            </div>
 
-          <form className="flex-1 max-w-3xl">
-            <div className="flex w-full">
-              <input
-                type="text"
-                placeholder="Buscar produtos..."
-                name="q"
-                className="w-full bg-gray-100 border border-gray-300 rounded-l-md text-black px-4 py-2 focus:outline-none"
-              />
+            <SearchBar/>
 
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-r-md flex items-center justify-center"
-              >
-                <span className="material-symbols-outlined text-white">search</span>
+            <div className="ml-8 mr-8">
+              <nav className="flex items-center gap-10 text-sm font-medium whitespace-nowrap">
+                <a href="/login" className="flex items-center gap-1 hover:text-gray-300 transition flex-col">
+                  <User size={30}/>
+                  <span>Sign in</span>
+                </a>
+
+                <a href="/orders" className="flex items-center gap-1 hover:text-gray-300 transition flex-col">
+                  <Heart size={30}/>
+                  <span>Orders</span>
+                </a>
+
+                <a href="/cart" className="flex items-center gap-1 hover:text-gray-300 transition flex-col">
+                  <ShoppingCart size={30}/>
+                  <span>Cart</span>
+                </a>
+              </nav>
+            </div>
+
+            <div className="ml-8 mr-8">
+              <button className=" rounded p-1.5">
+                  <span className="flex items-center justify-center gap-0.5 text-white hover:text-[var(--orangecolor)]">
+                  <LanguageOption code="US" label="EN"/>
+                  <ChevronDown size={17}/>
+                </span>
               </button>
             </div>
-          </form>
-
-          <nav className="flex items-center gap-6 text-sm font-medium whitespace-nowrap">
-            <a href="/login" className="flex items-center gap-1 hover:text-gray-300 transition">
-              <span className="material-symbols-outlined text-lg">account_circle</span>
-              <span>Entrar</span>
-            </a>
-          
-            <a href="/orders" className="hover:text-gray-300 transition">Pedidos</a>
-          
-            <div className="relative">
-              <a href="/cart" className="flex items-center gap-1 hover:text-gray-300 transition">
-                <span className="material-symbols-outlined text-lg">shopping_cart</span>
-                <span>Carrinho</span>
-              </a>
-            </div>
-          </nav>
-          
+          </div>
         </div>
       </header>
   );

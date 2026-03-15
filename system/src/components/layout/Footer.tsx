@@ -1,39 +1,64 @@
+import Logo from "@/components/ui/Logo";
+import { Mail, Phone } from "@/components/icons/icons"
+
 export default function Footer() {
     return (
-        <footer className="bg-[#131921] text-white mt-16">
-          <div className="mx-auto max-w-6xl px-4 py-6"> {/* diminuiu de py-12 para py-6 */}
+        <footer className="w-full [background:var(--headerground)] text-gray-300 border-t border-gray-800 mt-16">
+          <div className="max-w-7xl mx-auto px-6 py-10">
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3"> {/* gap menor */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
               <div>
-                <h3 className="text-base font-bold mb-2">AutoStore</h3> {/* diminuí fonte e margem */}
-                <p className="text-xs text-gray-300"> {/* fonte menor */}
-                  Seu portal automotivo completo. Em breve com anúncios de veículos, peças e serviços.
+                <Logo/>
+                <p className="text-sm text-gray-400 mb-4 mt-5">
+                  Your auto parts store with the best brands and prices on the market.
                 </p>
               </div>
 
+              {/* Institucional */}
               <div>
-                <h3 className="text-base font-bold mb-2">Contato</h3>
-                <ul className="space-y-1 text-xs text-gray-300"> {/* menos space - fonte menor */}
-                  <li>(11) 4002-8922</li>
-                  <li>contato@autostore.com.br</li>
-                  <li>São Paulo, SP</li>
+                <h3 className="text-[var(--orangecolor)] font-semibold mb-4">COMPANY</h3>
+                <ul className="space-y-2 text-sm">
+                  <li className="hover:text-white cursor-pointer">About Us</li>
+                  <li className="hover:text-white cursor-pointer">Privacy Policy</li>
+                  <li className="hover:text-white cursor-pointer">Terms of Use</li>
+                  <li className="hover:text-white cursor-pointer">Careers</li>
                 </ul>
               </div>
 
+              {/* Ajuda */}
               <div>
-                <h3 className="text-base font-bold mb-2">Horário de Atendimento</h3>
-                <ul className="space-y-1 text-xs text-gray-300">
-                  <li>Segunda - Sexta: 8h às 18h</li>
-                  <li>Sábado: 9h às 13h</li>
-                  <li>Domingo: Fechado</li>
+                <h3 className="text-[var(--orangecolor)] font-semibold mb-4">SUPPORT</h3>
+                <ul className="space-y-2 text-sm">
+                  <li className="hover:text-white cursor-pointer">Help Center</li>
+                  <li className="hover:text-white cursor-pointer">Returns & Exchanges</li>
+                  <li className="hover:text-white cursor-pointer">Shipping Information</li>
+                  <li className="hover:text-white cursor-pointer">Payment Methods</li>
                 </ul>
               </div>
+
+              {/* Contato */}
+              <div>
+                <h3 className="text-[var(--orangecolor)] font-semibold mb-4">CONTACT</h3>
+                <ul className="space-y-3 text-sm">
+                  <li className="flex gap-2 items-center">
+                    <Phone className="text-[var(--orangecolor)] size-4"/>
+                    (11) 4002-8922
+                  </li>
+                  <li className="flex gap-2 items-center">
+                    <Mail className="text-[var(--orangecolor)] size-4"/>
+                    contact@autoparts.com
+                    </li>
+                </ul>
+              </div>
+
             </div>
 
-            {/* Área de direitos autorais  — permanece igual */}
-            <div className="w-full max-h-0.5 mt-8 border-t border-gray-700 p-3 text-center text-sm text-gray-400">
-              <p>© {new Date().getFullYear()} LAStore. Todos os direitos reservados.</p>
+            {/* linha */}
+            <div className="border-t border-gray-800 mt-10 pt-6 text-center text-sm text-gray-500">
+              © {new Date().getFullYear()} LaStore. All Rights Reserved.
             </div>
+
           </div>
         </footer>
     );
