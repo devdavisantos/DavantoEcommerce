@@ -2,6 +2,7 @@ import Logo from "@/components/ui/Logo";
 import SearchBar from "@/components/ui/SearchBar";
 import { User, Heart, ShoppingCart, MapPin, ChevronDown, Menu } from "@/components/icons/icons";
 import LanguageOption from "@/components/icons/flags";
+import LocationModal from "@/components/ui/CodeZip";
 
 export default function Header() {
   return (
@@ -9,32 +10,34 @@ export default function Header() {
         <div className="max-w-7xl flex items-center justify-between gap-8 ml-14">
           <Logo width={170}/>
           <div className="flex items-center gap-8">
-            <div className="flex items-center gap-1">
-              <MapPin className="text-[var(--orangecolor)]"/>
-              <div>
-                <p className="text-xs text-gray-300">Deliver to</p>
-                <span className="font-bold">Update location</span>
-              </div>
-            </div>
+            <a className="flex items-center">
+              <LocationModal/>
+            </a>
 
             <SearchBar/>
 
             <div className="ml-8 mr-8">
               <nav className="flex items-center gap-10 text-sm font-medium whitespace-nowrap">
-                <a href="/login" className="flex items-center gap-1 hover:text-gray-300 transition flex-col">
-                  <User size={30}/>
-                  <span>Sign in</span>
-                </a>
+                <div className="hover:text-[var(--orangecolor)]">
+                  <a href="/login" className="flex items-center gap-1 transition flex-col">
+                    <User size={30}/>
+                    <span>Sign in</span>
+                  </a>
+                </div>
+                
+                <div className="hover:text-[var(--orangecolor)]">
+                  <a href="/orders" className="flex items-center gap-1 hover:text-gray-300 transition flex-col">
+                    <Heart size={30}/>
+                    <span>Orders</span>
+                  </a>
+                </div>
 
-                <a href="/orders" className="flex items-center gap-1 hover:text-gray-300 transition flex-col">
-                  <Heart size={30}/>
-                  <span>Orders</span>
-                </a>
-
-                <a href="/cart" className="flex items-center gap-1 hover:text-gray-300 transition flex-col">
-                  <ShoppingCart size={30}/>
-                  <span>Cart</span>
-                </a>
+                <div className="hover:text-[var(--orangecolor)]">
+                  <a href="/cart" className="flex items-center gap-1 hover:text-gray-300 transition flex-col">
+                    <ShoppingCart size={30}/>
+                    <span>Cart</span>
+                  </a>
+                </div>
               </nav>
             </div>
 

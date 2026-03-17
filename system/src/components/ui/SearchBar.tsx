@@ -3,7 +3,7 @@ import { Form, Frown } from "lucide-react";
 
 export default function SearchBar() {
   return (
-    <div className="flex-1 max-w-3xl w-700">
+    <div className="flex-1 max-w-4xl w-700">
       <div className="flex w-full h-11">
         <button className="bg-[var(--menubutton)] rounded-l-md w-21">
             <span className="flex items-center justify-center gap-0.5 text-gray-400 hover:text-white">

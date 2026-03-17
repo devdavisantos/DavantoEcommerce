@@ -3,9 +3,8 @@ import Header from "@/components/layout/Header";
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      {/* <Header /> */}
-      <Footer />
-    </main>
+    <div>
+        
+    </div>
   );
 }
