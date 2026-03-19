@@ -10,19 +10,18 @@ export default function LocationModal() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1 text-left cursor-pointer"
+        className="flex items-center gap-1 text-left cursor-pointer group"
       >
-        <MapPin className="text-[var(--orangecolor)]" />
+        <MapPin className="text-[var(--orangecolor)] transition group-hover:scale-110" />
 
         <div>
-          <p className="text-xs text-gray-300">Deliver to</p>
-          <span className="font-bold">Update location</span>
+          <p className="text-xs text-gray-300 transition group-hover:text-white">Deliver to</p>
+          <span className="font-bold transition group-hover:text-[var(--orangecolor)]">Update location</span>
         </div>
       </button>
 
       {open && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-
           <div className="bg-white p-6 rounded-lg w-[350px]">
             <h2 className="text-lg font-bold mb-4">
               Enter your ZIP Code
@@ -48,7 +47,6 @@ export default function LocationModal() {
             </div>
 
           </div>
-
         </div>
       )}
     </>

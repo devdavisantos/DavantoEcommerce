@@ -1,7 +1,8 @@
 import Logo from "@/components/ui/Logo";
 import SearchBar from "@/components/ui/SearchBar";
-import { User, Heart, ShoppingCart, MapPin, ChevronDown, Menu } from "@/components/icons/icons";
+import { User, Heart, ShoppingCart } from "@/components/icons/icons";
 import LanguageOption from "@/components/icons/flags";
+import LanguageDropdown from "@/components/ui/LanguageDropdown";
 import LocationModal from "@/components/ui/CodeZip";
 
 export default function Header() {
@@ -9,10 +10,10 @@ export default function Header() {
       <header className="fixed w-full h-20 bg-[var(--headerground)] px-4 shadow-md border-b border-black flex justify-start">
         <div className="max-w-7xl flex items-center justify-between gap-8 ml-14">
           <Logo width={170}/>
-          <div className="flex items-center gap-8">
-            <a className="flex items-center">
+          <div className="flex items-center gap-10 ml-1.5">
+            <div className="flex items-center">
               <LocationModal/>
-            </a>
+            </div>
 
             <SearchBar/>
 
@@ -41,14 +42,19 @@ export default function Header() {
               </nav>
             </div>
 
-            <div className="ml-8 mr-8">
+            {/* <div className="ml-8 mr-8">
               <button className=" rounded p-1.5">
                   <span className="flex items-center justify-center gap-0.5 text-white hover:text-[var(--orangecolor)]">
                   <LanguageOption code="US" label="EN"/>
                   <ChevronDown size={17}/>
                 </span>
               </button>
+            </div> */}
+
+            <div className="ml-8 mr-8">
+              <LanguageDropdown />
             </div>
+
           </div>
         </div>
       </header>
