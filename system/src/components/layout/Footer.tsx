@@ -3,7 +3,7 @@ import { Mail, Phone } from "@/components/icons/icons"
 
 export default function Footer() {
     return (
-      <footer className="w-full [background:var(--headerground)] text-gray-300 border-t border-gray-800 mt-6">
+      <footer className="w-full bg-charcoal-dark text-gray-300 border-t border-gray-800 mt-6">
         <div className="max-w-7xl mx-auto px-6 py-7">
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -15,7 +15,7 @@ export default function Footer() {
             </div>
           
             <div>
-              <h3 className="text-[var(--orangecolor)] font-semibold mb-3 text-sm">COMPANY</h3>
+              <h3 className="text-deep-orange font-semibold mb-3 text-sm">COMPANY</h3>
               <ul className="space-y-1 text-sm">
                 <li className="hover:text-white cursor-pointer">About Us</li>
                 <li className="hover:text-white cursor-pointer">Privacy Policy</li>
@@ -25,7 +25,7 @@ export default function Footer() {
             </div>
           
             <div>
-              <h3 className="text-[var(--orangecolor)] font-semibold mb-3 text-sm">SUPPORT</h3>
+              <h3 className="text-deep-orange font-semibold mb-3 text-sm">SUPPORT</h3>
               <ul className="space-y-1 text-xs">
                 <li className="hover:text-white cursor-pointer">Help Center</li>
                 <li className="hover:text-white cursor-pointer">Returns & Exchanges</li>
@@ -35,14 +35,14 @@ export default function Footer() {
             </div>
           
             <div>
-              <h3 className="text-[var(--orangecolor)] font-semibold mb-3 text-sm">CONTACT</h3>
+              <h3 className="text-deep-orange font-semibold mb-3 text-sm">CONTACT</h3>
               <ul className="space-y-2 text-xs">
                 <li className="flex gap-2 items-center">
-                  <Phone className="text-[var(--orangecolor)] size-4"/>
+                  <Phone className="text-deep-orange size-4"/>
                   (11) 4002-8922
                 </li>
                 <li className="flex gap-2 items-center">
-                  <Mail className="text-[var(--orangecolor)] size-4"/>
+                  <Mail className="text-deep-orange size-4"/>
                   contact@lastore.com
                 </li>
               </ul>

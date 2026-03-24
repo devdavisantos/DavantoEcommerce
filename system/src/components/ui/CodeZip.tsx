@@ -12,11 +12,11 @@ export default function LocationModal() {
         onClick={() => setOpen(true)}
         className="flex items-center gap-1 text-left cursor-pointer group"
       >
-        <MapPin className="text-[var(--orangecolor)] transition group-hover:scale-110" />
+        <MapPin className="text-deep-orange transition group-hover:scale-110" />
 
         <div>
           <p className="text-xs text-gray-300 transition group-hover:text-white">Deliver to</p>
-          <span className="font-bold transition group-hover:text-[var(--orangecolor)]">Update location</span>
+          <span className="font-bold transition group-hover:text-deep-orange">Update location</span>
         </div>
       </button>
 
@@ -41,7 +41,7 @@ export default function LocationModal() {
                 Cancel
               </button>
 
-              <button className="bg-[var(--orangecolor)] text-white px-4 py-2 rounded cursor-pointer">
+              <button className="bg-deep-orange text-deep-orange text-white px-4 py-2 rounded cursor-pointer">
                 Save
               </button>
             </div>

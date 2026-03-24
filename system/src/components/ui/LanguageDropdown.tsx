@@ -42,7 +42,7 @@ export default function LanguageDropdown() {
       {/* BOTÃO */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1 text-white hover:text-[var(--orangecolor)] cursor-pointer"
+        className="flex items-center gap-1 text-white hover:text-deep-orange cursor-pointer"
       >
         <LanguageOption
           code={selectdLang.code}
@@ -57,26 +57,26 @@ export default function LanguageDropdown() {
 
       {/* DROPDOWN */}
       {open && (
-        <div className="absolute right-0 mt-2 w-32 bg-[var(--headerground)] border border-gray-700 rounded shadow-[0_6px_14px_rgba(0,0,0,0.35)] z-50">
+        <div className="absolute right-0 mt-2 w-32 bg-charcoal-dark border border-gray-700 rounded shadow-[0_6px_14px_rgba(0,0,0,0.35)] z-50">
           <ul className="text-sm">
 
             <li
               onClick={() => handleSelect("US", "EN")}
-              className="px-3 py-2 hover:bg-gray-700 hover:text-[var(--orangecolor)] cursor-pointer"
+              className="px-3 py-2 hover:bg-gray-700 hover:text-deep-orange cursor-pointer"
             >
               <LanguageOption code="US" label="EN" />
             </li>
 
             <li
               onClick={() => handleSelect("BR", "PT")}
-              className="px-3 py-2 hover:bg-gray-700 hover:text-[var(--orangecolor)] cursor-pointer"
+              className="px-3 py-2 hover:bg-gray-700 hover:text-deep-orange cursor-pointer"
             >
               <LanguageOption code="BR" label="PT" />
             </li>
 
             <li
               onClick={() => handleSelect("ES", "ES")}
-              className="px-3 py-2 hover:bg-gray-700 hover:text-[var(--orangecolor)] cursor-pointer"
+              className="px-3 py-2 hover:bg-gray-700 hover:text-deep-orange cursor-pointer"
             >
               <LanguageOption code="ES" label="ES" />
             </li>
