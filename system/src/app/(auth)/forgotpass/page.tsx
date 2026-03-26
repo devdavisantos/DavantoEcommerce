@@ -8,32 +8,37 @@ export default function Login() {
   const [email, setEmail] = useState("");
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-950 px-4">
+    <div className="h-screen w-screen flex flex-col items-center justify-center bg-charcoal-dark p-4">
 
-      <div className="mb-10">
-        <Logo />
+      <div className="flex justify-center mb-10">
+        <Logo height={200} width={200}/>
       </div>
 
-      <div className="w-full max-w-md bg-gray-900 rounded-2xl shadow-xl p-8">
-        <h1 className="text-2xl font-bold text-center text-white mb-6">
+      <div className="modal w-full max-w-md shadow-xl rounded-2xl p-8 bg-charcoal-gray">
+        <h1 className="text-2xl font-bold mb-6 text-center text-white">
           Reset Password
         </h1>
     
         <div className="space-y-4">
           <input
             type="email"
-            placeholder="Your email"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 rounded-md bg-gray-200 text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
-          <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md font-semibold transition">
+            className="w-full px-4 py-2 rounded-md bg-gray-300 text-black border-white border-2 focus:border-white outline-none focus:ring-white ring-1"
+          />
+
+          <button className="w-full bg-amber-primary hover:bg-amber-secondary py-2 rounded-md font-semibold cursor-pointer">
             Reset Password
           </button>
-          <p className="text-center text-sm text-gray-400 cursor-pointer hover:text-white">
-            Back to login
-          </p>
-        </div>
 
+          <div className="text-center mt-2 text-sm text-gray-400">
+            <Link href="/login" className="inline-flex items-center justify-center gap-0.5">
+              <span className="hover:text-white">Return to Login</span>
+            </Link>
+          </div>
+
+        </div>
       </div>
     </div>
   );

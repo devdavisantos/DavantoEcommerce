@@ -39,7 +39,6 @@ export default function LanguageDropdown() {
   return (
     <div ref={dropdownRef} className="relative">
 
-      {/* BOTÃO */}
       <button
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1 text-white hover:text-deep-orange cursor-pointer"
@@ -55,7 +54,6 @@ export default function LanguageDropdown() {
         />
       </button>
 
-      {/* DROPDOWN */}
       {open && (
         <div className="absolute right-0 mt-2 w-32 bg-charcoal-dark border border-gray-700 rounded shadow-[0_6px_14px_rgba(0,0,0,0.35)] z-50">
           <ul className="text-sm">

@@ -66,67 +66,139 @@ export default function Register() {
     }
   };
 
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-950 p-4">
-        <div className="flex justify-center mb-10">
-          <Logo height={200} width={200}/>
-        </div>
-        <div className="modal w-full max-w-md shadow-xl rounded-2xl p-8 bg-gray-900">
-        <h1 className="text-2xl font-bold mb-6 text-center text-white">Create Account</h1>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {error && (
-                <div className="bg-red-500 text-white px-4 py-2 rounded-md text-sm">
-                  {error}
-                </div>
-              )}
+  // return (
+  //   <div className="min-h-screen flex flex-col items-center justify-center bg-gray-950 p-4">
+  //       <div className="flex justify-center mb-10">
+  //         <Logo height={200} width={200}/>
+  //       </div>
+  //       <div className="modal w-full max-w-md shadow-xl rounded-2xl p-8 bg-gray-900">
+  //       <h1 className="text-2xl font-bold mb-6 text-center text-white">Create Account</h1>
+  //           <form onSubmit={handleSubmit} className="space-y-4">
+  //             {error && (
+  //               <div className="bg-red-500 text-white px-4 py-2 rounded-md text-sm">
+  //                 {error}
+  //               </div>
+  //             )}
 
-              <input
-                type="text"
-                placeholder="Full Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                disabled={loading}
-                className="w-full px-4 py-2 rounded-md bg-gray-300 text-black border-white border-2 focus:border-white outline-none focus:ring-white ring-1 disabled:opacity-50"/>
+  //             <input
+  //               type="text"
+  //               placeholder="Full Name"
+  //               value={name}
+  //               onChange={(e) => setName(e.target.value)}
+  //               disabled={loading}
+  //               className="w-full px-4 py-2 rounded-md bg-gray-300 text-black border-white border-2 focus:border-white outline-none focus:ring-white ring-1 disabled:opacity-50"/>
               
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={loading}
-                className="w-full px-4 py-2 rounded-md bg-gray-300 text-black border-white border-2 focus:border-white outline-none focus:ring-white ring-1 disabled:opacity-50"/>
+  //             <input
+  //               type="email"
+  //               placeholder="Email"
+  //               value={email}
+  //               onChange={(e) => setEmail(e.target.value)}
+  //               disabled={loading}
+  //               className="w-full px-4 py-2 rounded-md bg-gray-300 text-black border-white border-2 focus:border-white outline-none focus:ring-white ring-1 disabled:opacity-50"/>
 
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-                className="w-full px-4 py-2 rounded-md bg-gray-300 text-black border-white border-2 focus:border-white outline-none focus:ring-white ring-1 disabled:opacity-50"/>
+  //             <input
+  //               type="password"
+  //               placeholder="Password"
+  //               value={password}
+  //               onChange={(e) => setPassword(e.target.value)}
+  //               disabled={loading}
+  //               className="w-full px-4 py-2 rounded-md bg-gray-300 text-black border-white border-2 focus:border-white outline-none focus:ring-white ring-1 disabled:opacity-50"/>
 
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                disabled={loading}
-                className="w-full px-4 py-2 rounded-md bg-gray-300 text-black border-white border-2 focus:border-white outline-none focus:ring-white ring-1 disabled:opacity-50"/>
+  //             <input
+  //               type="password"
+  //               placeholder="Confirm Password"
+  //               value={confirmPassword}
+  //               onChange={(e) => setConfirmPassword(e.target.value)}
+  //               disabled={loading}
+  //               className="w-full px-4 py-2 rounded-md bg-gray-300 text-black border-white border-2 focus:border-white outline-none focus:ring-white ring-1 disabled:opacity-50"/>
 
-              <button 
-                type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
-                {loading ? "Cadastrando..." : "Register"}
-              </button>
-            </form>
+  //             <button 
+  //               type="submit"
+  //               disabled={loading}
+  //               className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded-md font-semibold disabled:opacity-50 disabled:cursor-not-allowed">
+  //               {loading ? "Cadastrando..." : "Register"}
+  //             </button>
+  //           </form>
 
-            <div className="text-center mt-2 text-sm text-gray-300">
-              Already have an account?{" "}
-              <Link href="/login" className="text-blue-400 hover:underline">
+  //           <div className="text-center mt-2 text-sm text-gray-300">
+  //             Already have an account?{" "}
+  //             <Link href="/login" className="text-blue-400 hover:underline">
+  //               Sign in
+  //             </Link>
+  //           </div>
+  //       </div>
+  //   </div>
+  // );
+
+  return (
+    <div className="h-screen w-screen flex flex-col items-center justify-center bg-charcoal-dark p-4">
+            
+      <div className="flex justify-center mb-10">
+        <Logo height={200} width={200}/>
+      </div>
+    
+      <div className="modal w-full max-w-md shadow-xl rounded-2xl p-8 bg-charcoal-gray">
+        <h1 className="text-2xl font-bold mb-6 text-center text-white">
+          Create Account
+        </h1>
+        <div className="space-y-4">
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            disabled={loading}
+            className="w-full px-4 py-2 rounded-md bg-gray-300 text-black border-white border-2 focus:border-white outline-none focus:ring-white ring-1 disabled:opacity-50"
+          />
+
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
+            className="w-full px-4 py-2 rounded-md bg-gray-300 text-black border-white border-2 focus:border-white outline-none focus:ring-white ring-1 disabled:opacity-50"/>
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
+            className="w-full px-4 py-2 rounded-md bg-gray-300 text-black border-white border-2 focus:border-white outline-none focus:ring-white ring-1 disabled:opacity-50"/>
+
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            disabled={loading}
+            className="w-full px-4 py-2 rounded-md bg-gray-300 text-black border-white border-2 focus:border-white outline-none focus:ring-white ring-1 disabled:opacity-50"/>
+
+          <button 
+            type="submit"
+            disabled={loading}
+            className="w-full bg-amber-primary hover:bg-amber-secondary py-2 rounded-md font-semibold cursor-pointer">
+            {loading ? "Cadastrando..." : "Register"}
+          </button>
+
+          <div className="text-center mt-2 text-sm text-gray-300">
+            Already have an account?{" "}
+            <Link href="/login">
+              <span className="text-deep-orange hover:text-amber-500">
                 Sign in
-              </Link>
-            </div>
+              </span>
+            </Link>
+          </div>
+
+          <div className="text-center mt-2 text-sm text-gray-400">
+            <Link href="/" className="inline-flex items-center justify-center gap-0.5">
+              <span className="hover:text-white">Return to Home</span>
+            </Link>
+          </div>
+
         </div>
+      </div>
     </div>
-  );
+  )
 }

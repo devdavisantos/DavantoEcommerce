@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MapPin } from "lucide-react";
+import { MapPin, X } from "lucide-react";
 
 export default function LocationModal() {
   const [open, setOpen] = useState(false);
@@ -15,37 +15,48 @@ export default function LocationModal() {
         <MapPin className="text-deep-orange transition group-hover:scale-110" />
 
         <div>
-          <p className="text-xs text-gray-300 transition group-hover:text-white">Deliver to</p>
-          <span className="font-bold transition group-hover:text-deep-orange">Update location</span>
+          <p className="text-xs text-gray-300 transition group-hover:text-white">
+            Deliver to
+          </p>
+          <span className="font-bold transition group-hover:text-deep-orange">
+            Update location
+          </span>
         </div>
       </button>
 
       {open && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-[350px]">
-            <h2 className="text-lg font-bold mb-4">
-              Enter your ZIP Code
-            </h2>
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          onClick={() => setOpen(false)} // fecha ao clicar fora
+        >
+          <div
+            className="bg-charcoal-dark border border-gray-700 p-6 rounded-lg w-auto"
+            onClick={(e) => e.stopPropagation()} // impede fechar ao clicar dentro
+          >
+            <div className="flex mb-7 justify-between items-center">
+              <h2 className="text-lg font-bold">
+                Choose your location
+              </h2>
 
-            <input
-              type="text"
-              placeholder="ZIP Code"
-              className="w-full border p-2 rounded mb-4"
-            />
-
-            <div className="flex justify-end gap-3">
-              <button
+              <X
+                className="cursor-pointer hover:opacity-70"
                 onClick={() => setOpen(false)}
-                className="text-gray-500 cursor-pointer"
-              >
-                Cancel
-              </button>
-
-              <button className="bg-deep-orange text-deep-orange text-white px-4 py-2 rounded cursor-pointer">
-                Save
-              </button>
+              />
             </div>
 
+            <div className="flex gap-5">
+              <input
+                type="text"
+                placeholder="Postal Code"
+                className="w-2xs border p-2 rounded"
+              />
+
+              <button
+                className="bg-deep-orange hover:bg-amber-500 text-white px-5 py-2.5 rounded-lg  hover:shadow-l cursor-pointer"
+              >
+                Confirm
+              </button>
+            </div>
           </div>
         </div>
       )}

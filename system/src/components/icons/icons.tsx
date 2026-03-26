@@ -8,7 +8,9 @@ import {
   ChevronUp as ChevronUpIcon,
   Menu as MenuIcon,
   Mail as MailIcon,
-  Phone as PhoneIcon
+  Phone as PhoneIcon,
+  ArrowLeft as ArrowLeftIcon,
+  X as XIcon
 } from "lucide-react"
 
 const defaultProps = {
@@ -54,4 +56,12 @@ export const Mail = (props: any) => (
 
 export const Phone = (props: any) => (
   <PhoneIcon {...defaultProps} {...props} />
+)
+
+export const ArrowLeft = (props: any) => (
+  <ArrowLeftIcon {...defaultProps} {...props} />
+)
+
+export const X = (props: any) => (
+  <XIcon {...defaultProps} {...props} />
 )
