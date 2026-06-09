@@ -1,6 +1,6 @@
-checkout.carts
-checkout.cart_items
-checkout.coupons
-checkout.checkout_sessions
+-- checkout.carts
+-- checkout.cart_items
+-- checkout.coupons
+-- checkout.checkout_sessions
 
-Carrinho e processo de compra antes do pedido existir.
+-- Carrinho e processo de compra antes do pedido existir.

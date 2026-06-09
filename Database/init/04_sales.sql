@@ -1,6 +1,6 @@
-sales.orders
-sales.order_items
-sales.order_status_history
-sales.returns
+-- sales.orders
+-- sales.order_items
+-- sales.order_status_history
+-- sales.returns
 
-Pedidos já realizados.
+-- Pedidos já realizados.

@@ -13,7 +13,7 @@ services:
       - ./Database/init:/docker-entrypoint-initdb.d
 
   backend:
-    build: ./LaStore/LaStoreAPI
+    build: ./lastore.api/lastore.api
     container_name: lastore-api
     restart: always
     depends_on:

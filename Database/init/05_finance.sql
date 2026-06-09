@@ -1,7 +1,7 @@
-finance.transactions
-finance.refunds
-finance.invoices
-finance.webhooks
-finance.payouts
+-- finance.transactions
+-- finance.refunds
+-- finance.invoices
+-- finance.webhooks
+-- finance.payouts
 
-Tudo financeiro.
+-- Tudo financeiro.

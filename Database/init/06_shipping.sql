@@ -1,6 +1,6 @@
-shipping.shipments
-shipping.tracking
-shipping.carriers
-shipping.shipping_rates
+-- shipping.shipments
+-- shipping.tracking
+-- shipping.carriers
+-- shipping.shipping_rates
 
-Entrega/logística.
+-- Entrega/logística.

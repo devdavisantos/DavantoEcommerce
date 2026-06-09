@@ -1,6 +1,6 @@
-integration.stripe_events
-integration.erp_sync
-integration.email_queue
-integration.webhooks
+-- integration.stripe_events
+-- integration.erp_sync
+-- integration.email_queue
+-- integration.webhooks
 
-Integrações externas.
+-- Integrações externas.
