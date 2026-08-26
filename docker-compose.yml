@@ -1,7 +1,7 @@
 services:
   mysql:
     image: mysql:8
-    container_name: lastore-mysql
+    container_name: mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -13,8 +13,8 @@ services:
       - ./Database/init:/docker-entrypoint-initdb.d
 
   backend:
-    build: ./lastore.api/lastore.api
-    container_name: lastore-api
+    build: ./api/api
+    container_name: api
     restart: always
     depends_on:
       - mysql
@@ -25,7 +25,7 @@ services:
 
   frontend:
     build: ./system
-    container_name: lastore-front
+    container_name: front
     restart: always
     depends_on:
       - backend
