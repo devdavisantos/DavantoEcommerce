@@ -7,6 +7,7 @@
         public string TokenHash { get; init; } = string.Empty;
         public DateTime ExpiresAt { get; init; }
         public DateTime? RevokedAt { get; init; }
+        public DateTime? ReplacedAt { get; set; }
         public DateTime CreatedAt { get; init; }
         public string? Device { get; init; }
         public string? IpAddress { get; init; }

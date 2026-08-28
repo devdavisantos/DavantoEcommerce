@@ -4,6 +4,7 @@ using Api.Modules.Customer.Domain.Repositories;
 using Api.Shared.Database;
 using Api.Shared.Domain;
 using FluentValidation;
+using LoginEntity = Api.Modules.Customer.Domain.Entities.Login;
 
 namespace Api.Modules.Customer.Application.Auth.Register
 {
@@ -89,7 +90,7 @@ namespace Api.Modules.Customer.Application.Auth.Register
                         user,
                         cancellationToken);
 
-                var loginResult = Login.Create(
+                var loginResult = LoginEntity.Create(
                     userId,
                     passwordHash);
 

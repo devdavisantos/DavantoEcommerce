@@ -106,7 +106,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     email_confirmed_at AS EmailConfirmedAt,
                     created_at AS CreatedAt,
                     updated_at AS UpdatedAt,
-                    delete_at AS DeleteAt
+                    deleted_at AS DeletedAt
                 FROM customer.users
                 WHERE email = @Email
                 LIMIT 1;
@@ -265,7 +265,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
         {
             return User.Restore(
                 row.Id,
-                row.ExternalId,
+                Guid.Parse(row.ExternalId),
                 row.StripeCustomerId,
                 row.Name,
                 row.Email,

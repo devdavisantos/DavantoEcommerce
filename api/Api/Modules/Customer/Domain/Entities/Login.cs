@@ -1,4 +1,5 @@
-﻿using Api.Modules.Customer.Domain.Errors;
+﻿using Api.Modules.Customer.Domain.Entities;
+using Api.Modules.Customer.Domain.Errors;
 using Api.Shared.Domain;
 
 namespace Api.Modules.Customer.Domain.Entities
@@ -82,6 +83,11 @@ namespace Api.Modules.Customer.Domain.Entities
             Active = false;
 
             return Result.Success();
+        }
+
+        public void RegisterLogin()
+        {
+            LastLoginAt = DateTime.UtcNow;
         }
 
     }

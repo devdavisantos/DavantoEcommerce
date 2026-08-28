@@ -10,6 +10,7 @@ namespace Api.Modules.Customer.Domain.Entities
         public string TokenHash { get; private set; } = string.Empty;
         public DateTime ExpiresAt { get; private set; }
         public DateTime? RevokedAt { get; private set; }
+        public DateTime? ReplacedAt { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public string? Device { get; private set; }
         public string? IpAddress { get; private set; }
@@ -18,9 +19,19 @@ namespace Api.Modules.Customer.Domain.Entities
         {
         }
 
-        public bool IsRevoked => RevokedAt.HasValue;
-        public bool IsExpired => DateTime.UtcNow >= ExpiresAt;
-        public bool IsValid => !IsRevoked && !IsExpired;
+        public bool IsExpired()
+        {
+            return DateTime.UtcNow >= ExpiresAt;
+        }
+        public bool IsRevoked()
+        {
+            return RevokedAt. HasValue;
+        }
+        public bool IsReplaced()
+        {
+            return ReplacedAt.HasValue;
+        }
+
         public static Result<RefreshToken> Create(ulong loginId, string tokenHash, DateTime expiresAt, string? device, string? ipAddress)
         {
             if (loginId == 0)
@@ -47,6 +58,7 @@ namespace Api.Modules.Customer.Domain.Entities
                 TokenHash = tokenHash,
                 ExpiresAt = expiresAt,
                 RevokedAt = null,
+                ReplacedAt = null,
                 CreatedAt = DateTime.UtcNow,
                 Device = string.IsNullOrWhiteSpace(device) ? null : device.Trim(),
                 IpAddress = string.IsNullOrWhiteSpace(ipAddress) ? null : ipAddress.Trim()
@@ -61,6 +73,7 @@ namespace Api.Modules.Customer.Domain.Entities
             string tokenHash,
             DateTime expiresAt,
             DateTime? revokedAt,
+            DateTime? replacedAt,
             DateTime createdAt,
             string? device,
             string? ipAddress)
@@ -72,6 +85,7 @@ namespace Api.Modules.Customer.Domain.Entities
                 TokenHash = tokenHash,
                 ExpiresAt = expiresAt,
                 RevokedAt = revokedAt,
+                ReplacedAt= replacedAt,
                 CreatedAt = createdAt,
                 Device = device,
                 IpAddress = ipAddress
@@ -80,12 +94,23 @@ namespace Api.Modules.Customer.Domain.Entities
 
         public Result Revoke()
         {
-            if (IsRevoked)
+            if (IsRevoked())
                 return Result.Success();
 
             RevokedAt = DateTime.UtcNow;
 
             return Result.Success();
         }
+
+        public Result Replace()
+        {
+            if (IsReplaced())
+                return Result.Success();
+
+            ReplacedAt = DateTime.UtcNow;
+
+            return Result.Success();
+        }
+
     }
 }

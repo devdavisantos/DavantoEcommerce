@@ -5,15 +5,15 @@ namespace Api.Modules.Customer.Domain.Errors
     public static class LoginErrors
     {
         public static readonly Error InvalidUserId = new(
-            "Customers.Login.InvalidUserId",
+            "Customer.Login.InvalidUserId",
             "User ID must be valid.");
         
         public static readonly Error InvalidPasswordHash = new(
-            "Customers.Login.InvalidPasswordHash",
+            "Customer.Login.InvalidPasswordHash",
             "Password hash cannot be empty.");
 
         public static readonly Error Inactive = new(
-            "Customers.Login.Inactive",
+            "Customer.Login.Inactive",
             "Inactive login cannot be used.");
     }
 }

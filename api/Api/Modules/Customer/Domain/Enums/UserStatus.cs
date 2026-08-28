@@ -2,9 +2,9 @@
 {
     public enum UserStatus : byte
     {
-        PendingVerification = 0,
+        //PendingVerification = 0,
+        Inactive = 0,
         Active = 1,
-        Inactive = 2,
-        Blocked = 3
+        Blocked = 2
     }
 }

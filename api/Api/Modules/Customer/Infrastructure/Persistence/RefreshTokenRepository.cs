@@ -26,6 +26,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 token_hash AS TokenHash,
                 expires_at AS ExpiresAt,
                 revoked_at AS RevokedAt,
+                replaced_at AS ReplacedAt,
                 created_at AS CreatedAt,
                 device AS Device,
                 ip_address AS IpAddress
@@ -65,6 +66,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 token_hash,
                 expires_at,
                 revoked_at,
+                replaced_at,
                 created_at,
                 device,
                 ip_address
@@ -75,6 +77,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 @TokenHash,
                 @ExpiresAt,
                 @RevokedAt,
+                @ReplacedAt,
                 @CreatedAt,
                 @Device,
                 @IpAddress
@@ -168,6 +171,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 row.TokenHash,
                 row.ExpiresAt,
                 row.RevokedAt,
+                row.ReplacedAt,
                 row.CreatedAt,
                 row.Device,
                 row.IpAddress);

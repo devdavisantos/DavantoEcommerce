@@ -3,7 +3,7 @@
     internal sealed class UserRow
     {
         public ulong Id { get; init; }
-        public Guid ExternalId { get; init; }
+        public string ExternalId { get; init; } = string.Empty;
         public string? StripeCustomerId { get; init; }
         public string Name { get; init; } = string.Empty;
         public string Email { get; init; } = string.Empty;

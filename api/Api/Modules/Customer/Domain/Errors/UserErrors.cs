@@ -5,19 +5,19 @@ namespace Api.Modules.Customer.Domain.Errors
     public static class UserErrors
     {
         public static readonly Error InvalidName = new(
-            "Customers.User.InvalidName",
+            "Customer.User.InvalidName",
             "Name cannot be empty.");
 
         public static readonly Error InvalidEmail = new(
-            "Customers.User.InvalidEmail",
+            "Customer.User.InvalidEmail",
             "Email cannot be empty.");
 
         public static readonly Error InvalidStripeCustomerId = new(
-            "Customers.User.InvalidStripeCustomerId",
+            "Customer.User.InvalidStripeCustomerId",
             "Stripe Customer ID cannot be empty.");
 
         public static readonly Error StripeCustomerIdAlreadySet = new(
-            "Customers.User.StripeCustomerIdAlreadySet",
+            "Customer.User.StripeCustomerIdAlreadySet",
             "Stripe Customer ID is already set.");
     }
 

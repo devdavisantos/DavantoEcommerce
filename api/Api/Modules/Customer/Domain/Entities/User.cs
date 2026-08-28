@@ -40,7 +40,8 @@ namespace Api.Modules.Customer.Domain.Entities
                 ExternalId = Guid.NewGuid(),
                 Name = name.Trim(),
                 Email = email.Trim().ToLowerInvariant(),
-                Status = UserStatus.PendingVerification,
+                //Status = UserStatus.PendingVerification,
+                Status = UserStatus.Active,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -85,7 +86,7 @@ namespace Api.Modules.Customer.Domain.Entities
                 return Result.Success();
 
             EmailConfirmedAt = DateTime.UtcNow;
-            Status = UserStatus.Active;
+            //Status = UserStatus.Active;
             UpdatedAt = DateTime.UtcNow;
 
             return Result.Success();
@@ -106,7 +107,7 @@ namespace Api.Modules.Customer.Domain.Entities
             return Result.Success();
         }
 
-        public Result Activate()
+        public Result Active()
         {
             Status = UserStatus.Active;
             DeletedAt = null;
@@ -115,7 +116,7 @@ namespace Api.Modules.Customer.Domain.Entities
             return Result.Success();
         }
 
-        public Result Deactivate()
+        public Result Inactive()
         {
             if (Status == UserStatus.Inactive)
                 return Result.Success();
