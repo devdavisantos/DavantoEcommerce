@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
     token_hash VARCHAR(255) NOT NULL,
     expires_at DATETIME NOT NULL,
     revoked_at DATETIME NULL,
-    ReplacedAt DATETIME NULL,
+    replaced_at DATETIME NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     device VARCHAR(255) NULL,
     ip_address VARCHAR(45) NULL,

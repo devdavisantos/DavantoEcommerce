@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Api.Modules.Customer.Application.Auth.Login;
+using Api.Modules.Customer.Application.Auth.Refresh;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,6 +58,8 @@ builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 builder.Services.AddScoped<IJwtService, JwtService>();
 
+builder.Services.AddSingleton<IRefreshTokenGenerator, RefreshTokenGenerator>();
+
 builder.Services.AddSingleton<IDbConnectionFactory, MySqlConnectionFactory>();
 
 builder.Services.AddScoped<IDbSession, DbSession>();
@@ -65,7 +68,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
 
-builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<Api.Modules.Customer.Application.Abstractions.Persistence.IRefreshTokenRepository, RefreshTokenRepository>();
 
 builder.Services.AddScoped<IValidator<RegisterCommand>, RegisterCommandValidator>();
 
@@ -74,6 +77,8 @@ builder.Services.AddScoped<RegisterHandler>();
 builder.Services.AddScoped<LoginHandler>();
 
 builder.Services.AddScoped<IValidator<LoginCommand>, LoginCommandValidator>();
+
+builder.Services.AddScoped<RefreshHandler>();
 
 // Add services to the container.
 

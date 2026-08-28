@@ -1,5 +1,5 @@
-﻿using Api.Modules.Customer.Domain.Entities;
-using Api.Modules.Customer.Domain.Repositories;
+﻿using Api.Modules.Customer.Application.Abstractions.Persistence;
+using Api.Modules.Customer.Domain.Entities;
 using Api.Modules.Customer.Infrastructure.Persistence.Models;
 using Api.Shared.Database;
 using Dapper;
@@ -86,8 +86,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
             SELECT LAST_INSERT_ID();
             """;
 
-            await _dbSession.OpenConnectionAsync(
-                cancellationToken);
+            await _dbSession.OpenConnectionAsync(cancellationToken);
 
             var command = new CommandDefinition(
                 sql,
@@ -97,6 +96,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     refreshToken.TokenHash,
                     refreshToken.ExpiresAt,
                     refreshToken.RevokedAt,
+                    refreshToken.ReplacedAt,
                     refreshToken.CreatedAt,
                     refreshToken.Device,
                     refreshToken.IpAddress
@@ -135,7 +135,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 .ExecuteAsync(command);
         }
 
-        public async Task RevokeAllByLoginIdAsync(
+        public async Task RevokeByLoginIdAsync(
             ulong loginId,
             CancellationToken cancellationToken = default)
         {
@@ -160,6 +160,81 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
 
             await _dbSession.Connection
                 .ExecuteAsync(command);
+        }
+
+        public async Task<RefreshToken> GetRefreshTokenAsync(
+            string refreshToken,
+            CancellationToken cancellationToken)
+        {
+            const string sql = """
+                SELECT
+                    id AS Id,
+                    login_id AS LoginId,
+                    token_hash AS TokenHash,
+                    expires_at AS ExpiresAt,
+                    revoked_at AS RevokedAt,
+                    replaced_at AS ReplacedAt,
+                    created_at AS CreatedAt,
+                    device AS Device,
+                    ip_address AS IpAddress
+                FROM customer.refresh_tokens
+                WHERE token_hash = @RefreshToken
+                LIMIT 1;
+                """;
+
+            await _dbSession.OpenConnectionAsync(cancellationToken);
+
+            var command = new CommandDefinition(
+                sql,
+                new
+                {
+                    RefreshToken = refreshToken
+                },
+                transaction: _dbSession.Transaction,
+                cancellationToken: cancellationToken
+                );
+            
+            var row = await _dbSession.Connection.QuerySingleOrDefaultAsync<RefreshTokenRow>(command);
+
+            if (row is null)
+                return null!;
+
+            return RefreshToken.Restore(
+                row.Id,
+                row.LoginId,
+                row.TokenHash,
+                row.ExpiresAt,
+                row.RevokedAt,
+                row.ReplacedAt,
+                row.CreatedAt,
+                row.Device,
+                row.IpAddress);
+        }
+
+        public async Task ReplaceAsync(
+            ulong id,
+            DateTime replacedAt,
+            CancellationToken cancellationToken = default)
+        {
+            const string sql = """
+                UPDATE customer.refresh_tokens
+                SET replaced_at = @ReplacedAt
+                WHERE id = @Id;
+                """;
+
+            await _dbSession.OpenConnectionAsync(cancellationToken);
+
+            var command = new CommandDefinition(
+                sql,
+                new
+                {
+                    Id = id,
+                    ReplacedAt = replacedAt
+                },
+                transaction: _dbSession.Transaction,
+                cancellationToken: cancellationToken);
+
+            await _dbSession.Connection.ExecuteAsync(command);
         }
 
         private static RefreshToken Map(

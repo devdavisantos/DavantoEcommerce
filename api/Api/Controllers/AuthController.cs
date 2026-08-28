@@ -2,6 +2,8 @@ using Api.Controllers.Requests.Auth;
 using Api.Modules.Customer.Application.Auth.Register;
 using Microsoft.AspNetCore.Mvc;
 using Api.Modules.Customer.Application.Auth.Login;
+using Microsoft.AspNetCore.Authorization;
+using Api.Modules.Customer.Application.Auth.Refresh;
 
 namespace Api.Controllers
 {
@@ -11,11 +13,16 @@ namespace Api.Controllers
     {
         private readonly RegisterHandler _registerHandler;
         private readonly LoginHandler _loginHandler;
+        private readonly RefreshHandler _refreshHandler;
 
-        public AuthController(RegisterHandler registerHandler, LoginHandler loginHandler)
+        public AuthController(
+            RegisterHandler registerHandler,
+            LoginHandler loginHandler,
+            RefreshHandler refreshHandler)
         {
             _registerHandler = registerHandler;
             _loginHandler = loginHandler;
+            _refreshHandler = refreshHandler;
         }
 
 
@@ -68,6 +75,30 @@ namespace Api.Controllers
                     result.Error.Code,
                     result.Error.Message
                 });
+            }
+
+            return Ok(result.Value);
+
+        }
+
+        [AllowAnonymous]
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh(
+            [FromBody] RefreshRequest request,
+            CancellationToken cancellationToken)
+        {
+            var command = new RefreshCommand(request.RefreshToken);
+
+            var result = await _refreshHandler.HandleAsync(command, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return BadRequest(new
+                {
+                    result.Error.Code,
+                    result.Error.Message
+                });
+                    
             }
 
             return Ok(result.Value);

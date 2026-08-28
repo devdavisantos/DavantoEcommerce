@@ -30,10 +30,10 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     email_confirmed_at AS EmailConfirmedAt,
                     created_at AS CreatedAt,
                     updated_at AS UpdatedAt,
-                    delete_at AS DeleteAt
+                    deleted_at AS DeletedAt
                 FROM customer.users
                 WHERE Id = @Id
-                AND DeleteAt IS NULL
+                AND deleted_at IS NULL
                 LIMIT 1;
                 """;
 
@@ -67,7 +67,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     email_confirmed_at AS EmailConfirmedAt,
                     created_at AS CreatedAt,
                     updated_at AS UpdatedAt,
-                    delete_at AS DeleteAt
+                    deleted_at AS DeletedAt
                 FROM customer.users
                 WHERE external_id = @ExternalId
                 LIMIT 1;

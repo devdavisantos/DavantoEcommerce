@@ -1,8 +1,11 @@
-﻿using Api.Modules.Customer.Application.Abstractions.Authentication;
-using Api.Modules.Customer.Domain.Repositories;
+﻿using Api.Modules.Customer.Application.Abstractions.Persistence;
+using Api.Modules.Customer.Application.Abstractions.Authentication;
+using Api.Modules.Customer.Domain.Entities;
 using Api.Modules.Customer.Domain.Enums;
+using Api.Modules.Customer.Domain.Repositories;
 using Api.Shared.Domain;
 using FluentValidation;
+using Api.Configuration;
 
 namespace Api.Modules.Customer.Application.Auth.Login
 {
@@ -13,19 +16,26 @@ namespace Api.Modules.Customer.Application.Auth.Login
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtService _jwtService;
         private readonly IValidator<LoginCommand> _Validator;
+        private readonly IRefreshTokenGenerator _refreshTokenGenerator;
+        private readonly Abstractions.Persistence.IRefreshTokenRepository _refreshTokenRepository;
 
         public LoginHandler(
             IUserRepository userRepository,
             ILoginRepository loginRepository,
             IPasswordHasher passwordHasher,
             IJwtService jwtService,
-            IValidator<LoginCommand> validator)
+            IValidator<LoginCommand> validator,
+            IRefreshTokenGenerator refreshTokenGenerator,
+            Abstractions.Persistence.IRefreshTokenRepository refreshTokenRepository
+            )
         {
             _userRepository = userRepository;
             _loginRepository = loginRepository;
             _passwordHasher = passwordHasher;
             _jwtService = jwtService;
             _Validator = validator;
+            _refreshTokenGenerator = refreshTokenGenerator;
+            _refreshTokenRepository = refreshTokenRepository;
         }
 
         public async Task<Result<LoginResponse>> HandleAsync(LoginCommand command, CancellationToken cancellationToken = default)
@@ -78,7 +88,26 @@ namespace Api.Modules.Customer.Application.Auth.Login
 
             var accessToken = _jwtService.GenerateAccessToken(user);
 
-            var response = new LoginResponse(accessToken.Token, accessToken.ExpiresAtUtc);
+            var generatedRefreshToken = _refreshTokenGenerator.Generate();
+
+            var refreshTokenHash = _refreshTokenGenerator.Hash(generatedRefreshToken.Token);
+
+            var refreshTokenResult = RefreshToken.Create(
+                loginId: login.Id,
+                tokenHash: refreshTokenHash,
+                expiresAt: generatedRefreshToken.ExpiresAtUtc,
+                device: null,
+                ipAddress: null);
+
+            if (refreshTokenResult.IsFailure)
+            {
+                return Result.Failure<LoginResponse>(
+                    refreshTokenResult.Error);
+            }
+
+            await _refreshTokenRepository.CreateAsync(refreshTokenResult.Value, cancellationToken);
+
+            var response = new LoginResponse(accessToken.Token, accessToken.ExpiresAtUtc, generatedRefreshToken.Token);
 
             return Result.Success(response);
         }
