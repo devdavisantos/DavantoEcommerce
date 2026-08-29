@@ -7,6 +7,8 @@ using Api.Modules.Customer.Infrastructure.Persistence;
 using Api.Shared.Domain;
 using Api.Modules.Customer.Domain.Errors;
 using System.Net;
+using Api.Shared.Database;
+using Api.Modules.Customer.Domain.Enums;
 
 namespace Api.Modules.Customer.Application.Auth.Refresh
 {
@@ -17,19 +19,22 @@ namespace Api.Modules.Customer.Application.Auth.Refresh
         private readonly ILoginRepository _loginRepository;
         private readonly IUserRepository _userRepository;
         private readonly IJwtService _jwtService;
+        private readonly IDbSession _dbSession;
 
         public RefreshHandler(
             Abstractions.Persistence.IRefreshTokenRepository refreshTokenRepository,
             IRefreshTokenGenerator refreshTokenGenerator,
             ILoginRepository loginRepository,
             IUserRepository userRepository,
-            IJwtService jwtService)
+            IJwtService jwtService,
+            IDbSession dbSession)
         {
             _refreshTokenRepository = refreshTokenRepository;
             _refreshTokenGenerator = refreshTokenGenerator;
             _loginRepository = loginRepository;
             _userRepository = userRepository;
             _jwtService = jwtService;
+            _dbSession = dbSession;
         }
 
         public async Task<Result<RefreshResponse>> HandleAsync(
@@ -72,11 +77,28 @@ namespace Api.Modules.Customer.Application.Auth.Refresh
                 return Result.Failure<RefreshResponse>(RefreshTokenErrors.InvalidToken);
             }
 
+            if (!login.Active)
+            {
+                return Result.Failure<RefreshResponse>(RefreshTokenErrors.InactiveLogin);
+            }
+
             var user = await _userRepository.GetByIdAsync(login.UserId, cancellationToken);
 
             if (user is null)
             {
                 return Result.Failure<RefreshResponse>(RefreshTokenErrors.InvalidToken);
+            }
+
+            if (user.Status == UserStatus.Blocked)
+            {
+                return Result.Failure<RefreshResponse>(
+                    RefreshTokenErrors.UserBlocked);
+            }
+
+            if (user.Status != UserStatus.Active)
+            {
+                return Result.Failure<RefreshResponse>(
+                    RefreshTokenErrors.UserInactive);
             }
 
             var accessToken = _jwtService.GenerateAccessToken(user);
@@ -98,9 +120,35 @@ namespace Api.Modules.Customer.Application.Auth.Refresh
                 return Result.Failure<RefreshResponse>(newRefreshTokenResult.Error);
             }
 
-            await _refreshTokenRepository.CreateAsync(newRefreshTokenResult.Value, cancellationToken);
+            await _dbSession.BeginTransactionAsync(cancellationToken);
 
-            await _refreshTokenRepository.ReplaceAsync(currentRefreshToken.Id, DateTime.UtcNow, cancellationToken);
+            try
+            {
+                var replaced = await _refreshTokenRepository.ReplaceAsync(
+                    currentRefreshToken.Id,
+                    DateTime.UtcNow,
+                    cancellationToken);
+
+                if (!replaced)
+                {
+                    await _dbSession.RollbackAsync(cancellationToken);
+
+                    return Result.Failure<RefreshResponse>(
+                        RefreshTokenErrors.ReplacedToken);
+                }
+
+                await _refreshTokenRepository.CreateAsync(
+                    newRefreshTokenResult.Value,
+                    cancellationToken);
+
+                await _dbSession.CommitAsync(cancellationToken);
+            }
+            catch
+            {
+                await _dbSession.RollbackAsync(cancellationToken);
+
+                throw;
+            }
 
             return Result.Success(
                 new RefreshResponse(

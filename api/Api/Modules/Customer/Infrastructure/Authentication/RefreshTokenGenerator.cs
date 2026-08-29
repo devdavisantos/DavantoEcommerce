@@ -22,10 +22,8 @@ namespace Api.Modules.Customer.Infrastructure.Authentication
 
             var token = Convert.ToBase64String(bytes);
 
-            //var expiresAtUtc = DateTime.UtcNow.AddDays(
-            //    _jwtSettings.RefreshTokenExpirationDays);
-            var expiresAtUtc = DateTime.UtcNow.AddMinutes(
-                _jwtSettings.RefreshTokenExpirationMinutes);
+            var expiresAtUtc = DateTime.UtcNow.AddDays(
+                _jwtSettings.RefreshTokenExpirationDays);
 
             return new RefreshTokenResult(token, expiresAtUtc);
         }

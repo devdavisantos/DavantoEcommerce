@@ -58,14 +58,14 @@ namespace Api.Modules.Customer.Application.Auth.Login
                 return Result.Failure<LoginResponse>(LoginErrors.InvalidCredentials);
             }
 
-            if (user.Status != UserStatus.Active)
-            {
-                return Result.Failure<LoginResponse>(LoginErrors.AccountInactive);
-            }
-
             if (user.Status == UserStatus.Blocked)
             {
                 return Result.Failure<LoginResponse>(LoginErrors.AccountBlocked);
+            }
+
+            if (user.Status != UserStatus.Active)
+            {
+                return Result.Failure<LoginResponse>(LoginErrors.AccountInactive);
             }
 
             var login = await _loginRepository.GetActiveByUserIdAsync(user.Id, cancellationToken);

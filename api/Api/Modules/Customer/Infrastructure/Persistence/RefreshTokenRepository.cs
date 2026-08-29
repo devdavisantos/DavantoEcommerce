@@ -143,7 +143,8 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
             UPDATE customer.refresh_tokens
             SET revoked_at = UTC_TIMESTAMP()
             WHERE login_id = @LoginId
-              AND revoked_at IS NULL;
+              AND revoked_at IS NULL
+              AND replaced_at IS NULL;
             """;
 
             await _dbSession.OpenConnectionAsync(
@@ -211,7 +212,31 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 row.IpAddress);
         }
 
-        public async Task ReplaceAsync(
+        public async Task RevokeAsync(
+            ulong id,
+            CancellationToken cancellationToken = default)
+        {
+            const string sql = """
+                UPDATE customer.refresh_tokens
+                SET revoked_at = UTC_TIMESTAMP()
+                WHERE id = @Id
+                    AND revoked_at IS NULL
+                    AND replaced_at IS NULL;
+                """;
+
+            await _dbSession.OpenConnectionAsync(cancellationToken);
+
+            var command = new CommandDefinition(
+                sql,
+                new { Id = id },
+                transaction: _dbSession.Transaction,
+                cancellationToken: cancellationToken);
+
+            await _dbSession.Connection.ExecuteAsync(command);
+        }
+
+
+        public async Task<bool> ReplaceAsync(
             ulong id,
             DateTime replacedAt,
             CancellationToken cancellationToken = default)
@@ -219,7 +244,10 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
             const string sql = """
                 UPDATE customer.refresh_tokens
                 SET replaced_at = @ReplacedAt
-                WHERE id = @Id;
+                WHERE id = @Id
+                    AND replaced_at IS NULL
+                    AND revoked_at IS NULL
+                    AND expires_at > UTC_TIMESTAMP();
                 """;
 
             await _dbSession.OpenConnectionAsync(cancellationToken);
@@ -234,7 +262,10 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 transaction: _dbSession.Transaction,
                 cancellationToken: cancellationToken);
 
-            await _dbSession.Connection.ExecuteAsync(command);
+            var affectedRows =
+                await _dbSession.Connection.ExecuteAsync(command);
+
+            return affectedRows == 1;
         }
 
         private static RefreshToken Map(

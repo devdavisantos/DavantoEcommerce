@@ -35,5 +35,17 @@ namespace Api.Modules.Customer.Domain.Errors
         public static readonly Error ReplacedToken = new(
             "RefreshToken.ReplacedToken",
             "The refresh token has already been used.");
+
+        public static readonly Error InactiveLogin = new(
+            "Customers.RefreshToken.InactiveLogin",
+            "The login associated with this refresh token is inactive.");
+
+        public static readonly Error UserInactive = new(
+            "Customers.RefreshToken.UserInactive",
+            "The user associated with this refresh token is inactive.");
+
+        public static readonly Error UserBlocked = new(
+            "Customers.RefreshToken.UserBlocked",
+            "The user associated with this refresh token is blocked.");
     }
 }
