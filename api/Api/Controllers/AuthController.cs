@@ -5,6 +5,8 @@ using Api.Modules.Customer.Application.Auth.Login;
 using Microsoft.AspNetCore.Authorization;
 using Api.Modules.Customer.Application.Auth.Refresh;
 using Api.Modules.Customer.Application.Auth.Logout;
+using Api.Controllers.Extensions;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Api.Controllers
 {
@@ -16,7 +18,7 @@ namespace Api.Controllers
         private readonly LoginHandler _loginHandler;
         private readonly RefreshHandler _refreshHandler;
         private readonly LogoutHandler _logoutHandler;
-
+        
         public AuthController(
             RegisterHandler registerHandler,
             LoginHandler loginHandler,
@@ -45,21 +47,7 @@ namespace Api.Controllers
 
             if (result.IsFailure)
             {
-                if (result.Error.Code ==
-                    "Customer.Register.EmailAlreadyExists")
-                {
-                    return Conflict(new
-                    {
-                        result.Error.Code,
-                        result.Error.Message
-                    });
-                }
-
-                return BadRequest(new
-                {
-                    result.Error.Code,
-                    result.Error.Message
-                });
+                return this.ToActionResult(result.Error);
             }
 
             return StatusCode(
@@ -75,11 +63,7 @@ namespace Api.Controllers
 
             if (result.IsFailure)
             {
-                return BadRequest(new
-                {
-                    result.Error.Code,
-                    result.Error.Message
-                });
+                return this.ToActionResult(result.Error);
             }
 
             return Ok(result.Value);
@@ -98,11 +82,7 @@ namespace Api.Controllers
 
             if (result.IsFailure)
             {
-                return BadRequest(new
-                {
-                    result.Error.Code,
-                    result.Error.Message
-                });
+                return this.ToActionResult(result.Error);
                     
             }
 
@@ -125,15 +105,11 @@ namespace Api.Controllers
 
             if (result.IsFailure)
             {
-                return BadRequest(new
-                {
-                    result.Error.Code,
-                    result.Error.Message
-                });
+                return this.ToActionResult(result.Error);
             }
 
             return NoContent();
         }
-
+            
     }
 }

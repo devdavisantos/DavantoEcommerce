@@ -1,4 +1,5 @@
-﻿using Api.Modules.Customer.Domain.Errors;
+﻿using Api.Modules.Customer.Domain.Enums;
+using Api.Modules.Customer.Domain.Errors;
 using Api.Modules.Customer.Domain.Repositories;
 using Api.Shared.Domain;
 
@@ -26,6 +27,12 @@ namespace Api.Modules.Customer.Application.Profile
             {
                 return Result.Failure<GetProfileResponse>(
                     ProfileErrors.UserNotFound);
+            }
+
+            if (user.Status != UserStatus.Active)
+            {
+                return Result.Failure<GetProfileResponse>(
+                    ProfileErrors.UserInactive);
             }
 
             var response = new GetProfileResponse(

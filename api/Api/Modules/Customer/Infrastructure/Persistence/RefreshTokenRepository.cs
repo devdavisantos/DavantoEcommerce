@@ -135,7 +135,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 .ExecuteAsync(command);
         }
 
-        public async Task RevokeByLoginIdAsync(
+        public async Task RevokeAllByLoginIdAsync(
             ulong loginId,
             CancellationToken cancellationToken = default)
         {

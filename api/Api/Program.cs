@@ -1,5 +1,7 @@
 using Api.Configuration;
 using Api.Modules.Customer.Application.Abstractions.Authentication;
+using Api.Modules.Customer.Application.Auth.ChangePassword;
+using Api.Modules.Customer.Application.Auth.Delete;
 using Api.Modules.Customer.Application.Auth.Login;
 using Api.Modules.Customer.Application.Auth.Logout;
 using Api.Modules.Customer.Application.Auth.Refresh;
@@ -102,13 +104,16 @@ builder.Services.AddScoped<LogoutHandler>();
 
 builder.Services.AddScoped<GetProfileHandler>();
 
+builder.Services.AddScoped<DeleteHandler>();
+
+builder.Services.AddScoped<ChangePasswordHandler>();
+
 // Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-//builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -144,7 +149,7 @@ if (app.Environment.IsDevelopment())
 //app.UseSwagger();
 //app.UseSwaggerUI();
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

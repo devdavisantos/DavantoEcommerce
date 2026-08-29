@@ -1,6 +1,7 @@
 ﻿using Api.Modules.Customer.Domain.Enums;
 using Api.Modules.Customer.Domain.Errors;
 using Api.Shared.Domain;
+using System.Net.Mail;
 
 namespace Api.Modules.Customer.Domain.Entities
 {
@@ -35,12 +36,17 @@ namespace Api.Modules.Customer.Domain.Entities
                 return Result.Failure<User>(UserErrors.InvalidEmail);
             }
 
+            if (!IsValidEmail(email))
+            {
+                return Result.Failure<User>(
+                    UserErrors.InvalidEmail);
+            }
+
             var user = new User
             {
                 ExternalId = Guid.NewGuid(),
                 Name = name.Trim(),
                 Email = email.Trim().ToLowerInvariant(),
-                //Status = UserStatus.PendingVerification,
                 Status = UserStatus.Active,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -122,6 +128,18 @@ namespace Api.Modules.Customer.Domain.Entities
                 return Result.Success();
 
             Status = UserStatus.Inactive;
+            //DeletedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+
+            return Result.Success();
+        }
+
+        public Result Delete()
+        {
+            if (DeletedAt.HasValue)
+                return Result.Success();
+
+            Status = UserStatus.Inactive;
             DeletedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
 
@@ -156,5 +174,62 @@ namespace Api.Modules.Customer.Domain.Entities
 
             return Result.Success();
         }
+
+        private static bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            email = email.Trim().ToLowerInvariant();
+
+            try
+            {
+                var address = new MailAddress(email);
+
+                if (!string.Equals(
+                    address.Address,
+                    email,
+                    StringComparison.OrdinalIgnoreCase))
+                {
+                    return false;
+                }
+
+                var atIndex = email.LastIndexOf("@");
+
+                if (atIndex <= 0 || atIndex == email.Length - 1)
+                    return false;
+
+                var domain = email[(atIndex + 1)..];
+
+                if (!domain.Contains('.'))
+                {
+                    return false;
+                }
+
+                if (domain.StartsWith('.') || domain.EndsWith("."))
+                {
+                    return false;
+                }
+
+                var parts = domain.Split('.');
+
+                if (parts.Any(string.IsNullOrWhiteSpace))
+                    return false;
+
+                var extension = parts[^1];
+
+                if (extension.Length < 2)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+
     }
 }

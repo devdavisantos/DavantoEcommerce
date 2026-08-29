@@ -10,7 +10,7 @@ namespace Api.Modules.Customer.Domain.Errors
 
         public static readonly Error InvalidEmail = new(
             "Customer.User.InvalidEmail",
-            "Email cannot be empty.");
+            "Email email address is invalid.");
 
         public static readonly Error InvalidStripeCustomerId = new(
             "Customer.User.InvalidStripeCustomerId",
