@@ -64,10 +64,15 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
 
 CREATE TABLE IF NOT EXISTS addresses (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    external_id CHAR(36) NOT NULL,
     user_id BIGINT UNSIGNED NOT NULL,
-    line1 VARCHAR(255) NOT NULL,
-    line2 VARCHAR(255) NULL,
+    name VARCHAR(50) NULL,
+    recipient_name VARCHAR(150) NOT NULL,
     postal_code VARCHAR(20) NOT NULL,
+    street VARCHAR(200) NOT NULL,
+    number VARCHAR(30) NULL,
+    complement VARCHAR(150) NULL,
+    district VARCHAR(150) NULL,
     city VARCHAR(255) NOT NULL,
     state VARCHAR(255) NOT NULL,
     country VARCHAR(255) NOT NULL,
@@ -78,8 +83,11 @@ CREATE TABLE IF NOT EXISTS addresses (
     
     PRIMARY KEY (id),
 
+    UNIQUE KEY uq_addresses_external_id (external_id),
+
     KEY ix_addresses_user_id (user_id),
     KEY ix_addresses_user_active (user_id, active),
+    KEY ix_addresses_user_default (user_id, is_default, active),
 
     CONSTRAINT fk_addresses_users
         FOREIGN KEY (user_id)
