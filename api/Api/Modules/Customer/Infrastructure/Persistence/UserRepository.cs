@@ -261,6 +261,35 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
             await _dbSession.Connection.ExecuteScalarAsync(command);
         }
 
+        public async Task<bool> DocumentExistsAsync(
+            string document,
+            ulong excludeUserId,
+            CancellationToken cancellationToken = default)
+        {
+            const string sql = """
+                SELECT EXISTS(
+                    SELECT 1
+                    FROM customer.users
+                    WHERE document = @Document
+                        AND id <> @ExcludeUserId
+                );
+                """;
+
+            await _dbSession.OpenConnectionAsync(cancellationToken);
+
+            var command = new CommandDefinition(
+                sql,
+                new
+                {
+                    Document = document,
+                    ExcludeUserId = excludeUserId
+                },
+                transaction: _dbSession.Transaction,
+                cancellationToken: cancellationToken);
+
+            return await _dbSession.Connection.ExecuteScalarAsync<bool>(command);
+        }
+
         private static User Map(UserRow row)
         {
             return User.Restore(

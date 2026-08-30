@@ -10,3 +10,6 @@ obj/
 *.suo
 
 .env
+
+# Commenting not to upload the bank data for now
+/Database/mysql_data

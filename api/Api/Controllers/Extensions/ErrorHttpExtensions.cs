@@ -59,6 +59,24 @@ namespace Api.Controllers.Extensions
                 "Customer.Profile.UserInactive"
                     => controller.NotFound(response),
 
+                "Customer.User.DocumentCannotBeRemoved"
+                    => controller.BadRequest(response),
+
+                "Customer.User.PhoneCannotBeRemoved"
+                    => controller.BadRequest(response),
+
+                "Customer.User.InvalidDocument"
+                    => controller.BadRequest(response),
+
+                "Customer.User.DocumentAlreadyExists"
+                    => controller.Conflict(response),
+
+                "Customer.User.InvalidPhone"
+                    => controller.BadRequest(response),
+
+                "Customer.User.PhoneMustContainOnlyNumbers"
+                    => controller.BadRequest(response),
+
                 // Change Password
                 "Customer.ChangePassword.InvalidCurrentPassword"
                     => controller.BadRequest(response),

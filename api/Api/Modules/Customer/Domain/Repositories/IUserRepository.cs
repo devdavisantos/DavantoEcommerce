@@ -10,5 +10,6 @@ namespace Api.Modules.Customer.Domain.Repositories
         Task<bool> EmailExistsAsync(string email, CancellationToken cancellationToken = default);
         Task<ulong> CreateAsync(User user, CancellationToken cancellationToken = default);
         Task UpdateAsync(User user, CancellationToken cancellationToken = default);
+        Task<bool> DocumentExistsAsync(string document, ulong excludeUserId, CancellationToken cancellationToken = default);
     }
 }

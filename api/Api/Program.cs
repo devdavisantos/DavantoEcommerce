@@ -108,6 +108,8 @@ builder.Services.AddScoped<DeleteHandler>();
 
 builder.Services.AddScoped<ChangePasswordHandler>();
 
+builder.Services.AddScoped<UpdateProfileHandler>();
+
 // Add services to the container.
 
 builder.Services.AddControllers();
