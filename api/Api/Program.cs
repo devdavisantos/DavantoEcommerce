@@ -1,5 +1,10 @@
 using Api.Configuration;
 using Api.Modules.Customer.Application.Abstractions.Authentication;
+using Api.Modules.Customer.Application.Address.Create;
+using Api.Modules.Customer.Application.Address.Delete;
+using Api.Modules.Customer.Application.Address.GetAll;
+using Api.Modules.Customer.Application.Address.SetDefault;
+using Api.Modules.Customer.Application.Address.Update;
 using Api.Modules.Customer.Application.Auth.ChangePassword;
 using Api.Modules.Customer.Application.Auth.Delete;
 using Api.Modules.Customer.Application.Auth.Login;
@@ -109,6 +114,18 @@ builder.Services.AddScoped<DeleteHandler>();
 builder.Services.AddScoped<ChangePasswordHandler>();
 
 builder.Services.AddScoped<UpdateProfileHandler>();
+
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+
+builder.Services.AddScoped<CreateAddressHandler>();
+
+builder.Services.AddScoped<GetAddressesHandler>();
+
+builder.Services.AddScoped<UpdateAddressHandler>();
+
+builder.Services.AddScoped<SetDefaultAddressHandler>();
+
+builder.Services.AddScoped<DeleteAddressHandler>();
 
 // Add services to the container.
 

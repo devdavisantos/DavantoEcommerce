@@ -1,5 +1,11 @@
 ﻿using Api.Controllers.Extensions;
 using Api.Controllers.Requests.Customer;
+using Api.Controllers.Requests.Customers;
+using Api.Modules.Customer.Application.Address.Create;
+using Api.Modules.Customer.Application.Address.Delete;
+using Api.Modules.Customer.Application.Address.GetAll;
+using Api.Modules.Customer.Application.Address.SetDefault;
+using Api.Modules.Customer.Application.Address.Update;
 using Api.Modules.Customer.Application.Auth.ChangePassword;
 using Api.Modules.Customer.Application.Auth.Delete;
 using Api.Modules.Customer.Application.Profile;
@@ -19,17 +25,32 @@ namespace Api.Controllers
         private readonly DeleteHandler _deleteHandle;
         private readonly ChangePasswordHandler _changePasswordHandler;
         private readonly UpdateProfileHandler _updateProfileHandler;
+        private readonly CreateAddressHandler _createAddressHandler;
+        private readonly GetAddressesHandler _getAddressesHandler;
+        private readonly UpdateAddressHandler _updateAddressHandler;
+        private readonly SetDefaultAddressHandler _setDefaultAddressHandler;
+        private readonly DeleteAddressHandler _deleteAddressHandler;
 
         public CustomerController(
             GetProfileHandler getProfileHandler,
             DeleteHandler deleteHandler,
             ChangePasswordHandler changePasswordHandler,
-            UpdateProfileHandler updateProfileHandler)
+            UpdateProfileHandler updateProfileHandler,
+            CreateAddressHandler createAddressHandler,
+            GetAddressesHandler getAddressesHandler,
+            UpdateAddressHandler updateAddressHandler,
+            SetDefaultAddressHandler setDefaultAddressHandler,
+            DeleteAddressHandler deleteAddressHandler)
         {
             _getProfileHandler = getProfileHandler;
             _deleteHandle = deleteHandler;
             _changePasswordHandler = changePasswordHandler;
             _updateProfileHandler = updateProfileHandler;
+            _createAddressHandler = createAddressHandler;
+            _getAddressesHandler = getAddressesHandler;
+            _updateAddressHandler = updateAddressHandler;
+            _setDefaultAddressHandler = setDefaultAddressHandler;
+            _deleteAddressHandler = deleteAddressHandler;
         }
 
         #region Profile
@@ -96,6 +117,218 @@ namespace Api.Controllers
             var result = await _updateProfileHandler.HandleAsync(
                 command,
                 cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return this.ToActionResult(
+                    result.Error);
+            }
+
+            return NoContent();
+        }
+
+        [HttpGet("addresses")]
+        public async Task<IActionResult> GetAddresses(CancellationToken cancellationToken)
+        {
+            var externalIdClaim = User.FindFirst(
+                JwtRegisteredClaimNames.Sub);
+
+            if (externalIdClaim is null ||
+                !Guid.TryParse(
+                    externalIdClaim.Value,
+                    out var userExternalId))
+            {
+                return Unauthorized();
+            }
+
+            var query = new GetAddressesQuery(
+                userExternalId);
+
+            var result =
+                await _getAddressesHandler.HandleAsync(
+                    query,
+                    cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return this.ToActionResult(
+                    result.Error);
+            }
+
+            return Ok(result.Value);
+        }
+
+        [HttpPost("addresses")]
+        public async Task<IActionResult> CreateAddress(
+        [FromBody] CreateAddressRequest request,
+        CancellationToken cancellationToken)
+        {
+            var externalIdClaim = User.FindFirst(
+                JwtRegisteredClaimNames.Sub);
+
+            if (externalIdClaim is null ||
+                !Guid.TryParse(
+                    externalIdClaim.Value,
+                    out var userExternalId))
+            {
+                return Unauthorized();
+            }
+
+            var command = new CreateAddressCommand(
+                userExternalId,
+                request.Name,
+                request.RecipientName,
+                request.PostalCode,
+                request.Street,
+                request.Number,
+                request.Complement,
+                request.District,
+                request.City,
+                request.State,
+                request.Country,
+                request.IsDefault);
+
+            var result =
+                await _createAddressHandler.HandleAsync(
+                    command,
+                    cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return this.ToActionResult(
+                    result.Error);
+            }
+
+            return Created(
+                $"/api/customers/addresses/{result.Value.ExternalId}",
+                result.Value);
+        }
+
+        [HttpPatch("addresses/{addressExternalId:guid}")]
+        public async Task<IActionResult> UpdateAddress(
+            Guid addressExternalId,
+            [FromBody] UpdateAddressRequest request,
+            CancellationToken cancellationToken)
+        {
+            var externalIdClaim = User.FindFirst(
+                JwtRegisteredClaimNames.Sub);
+
+            if (externalIdClaim is null ||
+                !Guid.TryParse(
+                    externalIdClaim.Value,
+                    out var userExternalId))
+            {
+                return Unauthorized();
+            }
+
+            var command = new UpdateAddressCommand(
+                userExternalId,
+                addressExternalId,
+
+                HasValue(request.Name),
+                GetStringValue(request.Name),
+
+                HasValue(request.RecipientName),
+                GetStringValue(request.RecipientName),
+
+                HasValue(request.PostalCode),
+                GetStringValue(request.PostalCode),
+
+                HasValue(request.Street),
+                GetStringValue(request.Street),
+
+                HasValue(request.Number),
+                GetStringValue(request.Number),
+
+                HasValue(request.Complement),
+                GetStringValue(request.Complement),
+
+                HasValue(request.District),
+                GetStringValue(request.District),
+
+                HasValue(request.City),
+                GetStringValue(request.City),
+
+                HasValue(request.State),
+                GetStringValue(request.State),
+
+                HasValue(request.Country),
+                GetStringValue(request.Country));
+
+            var result =
+                await _updateAddressHandler.HandleAsync(
+                    command,
+                    cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return this.ToActionResult(
+                    result.Error);
+            }
+
+            return NoContent();
+        }
+
+        [HttpPatch("addresses/{addressExternalId:guid}/default")]
+        public async Task<IActionResult> SetDefaultAddress(
+            Guid addressExternalId,
+            CancellationToken cancellationToken)
+        {
+            var externalIdClaim = User.FindFirst(
+                JwtRegisteredClaimNames.Sub);
+
+            if (externalIdClaim is null ||
+                !Guid.TryParse(
+                    externalIdClaim.Value,
+                    out var userExternalId))
+            {
+                return Unauthorized();
+            }
+
+            var command =
+                new SetDefaultAddressCommand(
+                    userExternalId,
+                    addressExternalId);
+
+            var result =
+                await _setDefaultAddressHandler.HandleAsync(
+                    command,
+                    cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return this.ToActionResult(
+                    result.Error);
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("addresses/{addressExternalId:guid}")]
+        public async Task<IActionResult> DeleteAddress(
+            Guid addressExternalId,
+            CancellationToken cancellationToken)
+        {
+            var externalIdClaim = User.FindFirst(
+                JwtRegisteredClaimNames.Sub);
+
+            if (externalIdClaim is null ||
+                !Guid.TryParse(
+                    externalIdClaim.Value,
+                    out var userExternalId))
+            {
+                return Unauthorized();
+            }
+
+            var command =
+                new DeleteAddressCommand(
+                    userExternalId,
+                    addressExternalId);
+
+            var result =
+                await _deleteAddressHandler.HandleAsync(
+                    command,
+                    cancellationToken);
 
             if (result.IsFailure)
             {
@@ -183,6 +416,12 @@ namespace Api.Controllers
             }
 
             return element.GetString();
+        }
+
+        private static bool HasValue(JsonElement element)
+        {
+            return element.ValueKind !=
+                JsonValueKind.Undefined;
         }
 
     }
