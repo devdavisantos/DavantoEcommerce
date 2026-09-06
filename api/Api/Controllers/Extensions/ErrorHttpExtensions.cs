@@ -93,6 +93,61 @@ namespace Api.Controllers.Extensions
                 "Customer.ChangePassword.UserInactive"
                     => controller.Unauthorized(response),
 
+                // Change Email
+                "Customer.EmailChange.UserNotFound"
+                    => controller.NotFound(response),
+
+                "Customer.EmailChange.UserInactive"
+                    => controller.Unauthorized(response),
+
+                "Customer.EmailChange.EmailAlreadyExists"
+                    => controller.Conflict(response),
+
+                "Customer.EmailChange.InvalidToken"
+                    => controller.BadRequest(response),
+
+                "Customer.EmailChange.ExpiredToken"
+                    => controller.BadRequest(response),
+
+                "Customer.EmailChange.RevokedToken"
+                    => controller.BadRequest(response),
+
+                "Customer.EmailChange.AlreadyConfirmed"
+                    => controller.BadRequest(response),
+
+                "Customer.EmailChange.InvalidMetadata"
+                    => controller.BadRequest(response),
+
+                "Customer.PasswordReset.InvalidEmail"
+                    => controller.BadRequest(response),
+
+                "Customer.PasswordReset.EmailNotFound"
+                    => controller.NotFound(response),
+
+                "Customer.PasswordReset.InvalidToken"
+                    => controller.BadRequest(response),
+
+                "Customer.PasswordReset.ExpiredToken"
+                    => controller.BadRequest(response),
+
+                "Customer.PasswordReset.RevokedToken"
+                    => controller.BadRequest(response),
+
+                "Customer.PasswordReset.AlreadyCompleted"
+                    => controller.BadRequest(response),
+
+                "Customer.PasswordReset.SamePassword"
+                    => controller.BadRequest(response),
+
+                "Customer.PasswordReset.UserNotFound"
+                    => controller.NotFound(response),
+
+                "Customer.PasswordReset.UserInactive"
+                    => controller.Unauthorized(response),
+
+                "Customer.PasswordReset.LoginNotFound"
+                    => controller.Unauthorized(response),
+
                 // Default
                 _ => controller.BadRequest(response)
             };

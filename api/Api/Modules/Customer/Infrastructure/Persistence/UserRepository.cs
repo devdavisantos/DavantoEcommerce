@@ -154,6 +154,38 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
             return await _dbSession.Connection.ExecuteScalarAsync<bool>(command);
         }
 
+        public async Task<bool> EmailExistsAsync(
+            string email,
+            ulong excludeUserId,
+            CancellationToken cancellationToken = default)
+        {
+            const string sql = """
+                SELECT EXISTS(
+                    SELECT 1
+                    FROM customer.users
+                    WHERE email = @Email
+                      AND id <> @ExcludeUserId
+                );
+                """;
+
+            await _dbSession.OpenConnectionAsync(
+                cancellationToken);
+
+            var command = new CommandDefinition(
+                sql,
+                new
+                {
+                    Email = email,
+                    ExcludeUserId = excludeUserId
+                },
+                transaction: _dbSession.Transaction,
+                cancellationToken: cancellationToken);
+
+            return await _dbSession.Connection
+                .ExecuteScalarAsync<bool>(
+                    command);
+        }
+
         public async Task<ulong> CreateAsync(User user, CancellationToken cancellationToken = default)
         {
             const string insertSql = """

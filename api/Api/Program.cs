@@ -7,10 +7,14 @@ using Api.Modules.Customer.Application.Address.SetDefault;
 using Api.Modules.Customer.Application.Address.Update;
 using Api.Modules.Customer.Application.Auth.ChangePassword;
 using Api.Modules.Customer.Application.Auth.Delete;
+using Api.Modules.Customer.Application.Auth.ForgotPassword;
 using Api.Modules.Customer.Application.Auth.Login;
 using Api.Modules.Customer.Application.Auth.Logout;
 using Api.Modules.Customer.Application.Auth.Refresh;
 using Api.Modules.Customer.Application.Auth.Register;
+using Api.Modules.Customer.Application.Auth.ResetPassword;
+using Api.Modules.Customer.Application.Email.Change;
+using Api.Modules.Customer.Application.Email.Confirm;
 using Api.Modules.Customer.Application.Profile;
 using Api.Modules.Customer.Domain.Repositories;
 using Api.Modules.Customer.Infrastructure.Authentication;
@@ -126,6 +130,18 @@ builder.Services.AddScoped<UpdateAddressHandler>();
 builder.Services.AddScoped<SetDefaultAddressHandler>();
 
 builder.Services.AddScoped<DeleteAddressHandler>();
+
+builder.Services.AddSingleton<IAccountTokenGenerator, AccountTokenGenerator>();
+
+builder.Services.AddScoped<IAccountActionRequestRepository, AccountActionRequestRepository>();
+
+builder.Services.AddScoped<ChangeEmailHandler>();
+
+builder.Services.AddScoped<ConfirmEmailChangeHandler>();
+
+builder.Services.AddScoped<ForgotPasswordHandler>();
+
+builder.Services.AddScoped<ResetPasswordHandler>();
 
 // Add services to the container.
 

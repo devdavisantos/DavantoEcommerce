@@ -426,5 +426,36 @@ namespace Api.Modules.Customer.Domain.Entities
 
             return Result.Success(normalizedName);
         }
+
+        public static Result<string> ValidateAndNormalizeEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email) ||
+                !IsValidEmail(email))
+            {
+                return Result.Failure<string>(
+                    UserErrors.InvalidEmail);
+            }
+
+            return Result.Success(
+                email.Trim().ToLowerInvariant());
+        }
+
+        public Result ChangeEmail(string email)
+        {
+            if (!IsValidEmail(email))
+            {
+                return Result.Failure(
+                    UserErrors.InvalidEmail);
+            }
+
+            Email = email
+                .Trim()
+                .ToLowerInvariant();
+
+            EmailConfirmedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
+
+            return Result.Success();
+        }
     }
 }

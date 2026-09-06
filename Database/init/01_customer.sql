@@ -95,6 +95,32 @@ CREATE TABLE IF NOT EXISTS addresses (
         ON DELETE RESTRICT
 );
 
+CREATE TABLE IF NOT EXISTS account_action_requests (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    external_id CHAR(36) NOT NULL,
+    user_id BIGINT UNSIGNED NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    token_hash VARCHAR(255) NOT NULL,
+    metadata JSON NULL,
+    expires_at DATETIME NOT NULL,
+    completed_at DATETIME NULL,
+    revoked_at DATETIME NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    PRIMARY KEY (id),
+
+    UNIQUE KEY uq_account_action_requests_external_id (external_id),
+    UNIQUE KEY uq_account_action_requests_token_hash (token_hash),
+
+    KEY ix_account_action_requests_user_id (user_id),
+    KEY ix_account_action_requests_user_type (user_id, type),
+
+    CONSTRAINT fk_account_action_requests_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
 -- CREATE TABLE IF NOT EXISTS wishlists(
 --     id BIGINT AUTO_INCREMENT PRIMARY KEY,
 --     user_id BIGINT NOT NULL,

@@ -1,4 +1,5 @@
 ﻿using Api.Controllers.Extensions;
+using Api.Controllers.Requests.Auth;
 using Api.Controllers.Requests.Customer;
 using Api.Controllers.Requests.Customers;
 using Api.Modules.Customer.Application.Address.Create;
@@ -8,6 +9,10 @@ using Api.Modules.Customer.Application.Address.SetDefault;
 using Api.Modules.Customer.Application.Address.Update;
 using Api.Modules.Customer.Application.Auth.ChangePassword;
 using Api.Modules.Customer.Application.Auth.Delete;
+using Api.Modules.Customer.Application.Auth.ForgotPassword;
+using Api.Modules.Customer.Application.Auth.ResetPassword;
+using Api.Modules.Customer.Application.Email.Change;
+using Api.Modules.Customer.Application.Email.Confirm;
 using Api.Modules.Customer.Application.Profile;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +35,10 @@ namespace Api.Controllers
         private readonly UpdateAddressHandler _updateAddressHandler;
         private readonly SetDefaultAddressHandler _setDefaultAddressHandler;
         private readonly DeleteAddressHandler _deleteAddressHandler;
+        private readonly ChangeEmailHandler _changeEmailHandler;
+        private readonly ConfirmEmailChangeHandler _confirmEmailChangeHandler;
+        private readonly ForgotPasswordHandler _forgotPasswordHandler;
+        private readonly ResetPasswordHandler _resetPasswordHandler;
 
         public CustomerController(
             GetProfileHandler getProfileHandler,
@@ -40,7 +49,11 @@ namespace Api.Controllers
             GetAddressesHandler getAddressesHandler,
             UpdateAddressHandler updateAddressHandler,
             SetDefaultAddressHandler setDefaultAddressHandler,
-            DeleteAddressHandler deleteAddressHandler)
+            DeleteAddressHandler deleteAddressHandler,
+            ChangeEmailHandler changeEmailHandler,
+            ConfirmEmailChangeHandler confirmEmailChangeHandler,
+            ForgotPasswordHandler forgotPasswordHandler,
+            ResetPasswordHandler resetPasswordHandler)
         {
             _getProfileHandler = getProfileHandler;
             _deleteHandle = deleteHandler;
@@ -51,6 +64,10 @@ namespace Api.Controllers
             _updateAddressHandler = updateAddressHandler;
             _setDefaultAddressHandler = setDefaultAddressHandler;
             _deleteAddressHandler = deleteAddressHandler;
+            _changeEmailHandler = changeEmailHandler;
+            _confirmEmailChangeHandler = confirmEmailChangeHandler;
+            _forgotPasswordHandler = forgotPasswordHandler;
+            _resetPasswordHandler = resetPasswordHandler;
         }
 
         #region Profile
@@ -117,6 +134,68 @@ namespace Api.Controllers
             var result = await _updateProfileHandler.HandleAsync(
                 command,
                 cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return this.ToActionResult(
+                    result.Error);
+            }
+
+            return NoContent();
+        }
+
+        [HttpPost("change-email")]
+        public async Task<IActionResult> ChangeEmail(
+        [FromBody] ChangeEmailRequest request,
+        CancellationToken cancellationToken)
+        {
+            var externalIdClaim = User.FindFirst(
+                JwtRegisteredClaimNames.Sub);
+
+            if (externalIdClaim is null ||
+                !Guid.TryParse(
+                    externalIdClaim.Value,
+                    out var userExternalId))
+            {
+                return Unauthorized();
+            }
+
+            var command =
+                new ChangeEmailCommand(
+                    userExternalId,
+                    request.NewEmail);
+
+            var result =
+                await _changeEmailHandler.HandleAsync(
+                    command,
+                    cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return this.ToActionResult(
+                    result.Error);
+            }
+
+            return Ok(new
+            {
+                token = result.Value
+            });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("confirm-email-change")]
+        public async Task<IActionResult> ConfirmEmailChange(
+        [FromBody] ConfirmEmailChangeRequest request,
+        CancellationToken cancellationToken)
+        {
+            var command =
+                new ConfirmEmailChangeCommand(
+                    request.Token);
+
+            var result =
+                await _confirmEmailChangeHandler.HandleAsync(
+                    command,
+                    cancellationToken);
 
             if (result.IsFailure)
             {
@@ -422,6 +501,57 @@ namespace Api.Controllers
         {
             return element.ValueKind !=
                 JsonValueKind.Undefined;
+        }
+
+        [AllowAnonymous]
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(
+            [FromBody] ForgotPasswordRequest request,
+            CancellationToken cancellationToken)
+        {
+            var command =
+                new ForgotPasswordCommand(
+                    request.Email);
+
+            var result = await _forgotPasswordHandler.HandleAsync(
+                    command,
+                    cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return this.ToActionResult(
+                    result.Error);
+            }
+
+            return Ok(new
+            {
+                token = result.Value
+            });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(
+            [FromBody] ResetPasswordRequest request,
+            CancellationToken cancellationToken)
+        {
+            var command =
+                new ResetPasswordCommand(
+                    request.Token,
+                    request.NewPassword);
+
+            var result =
+                await _resetPasswordHandler.HandleAsync(
+                    command,
+                    cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return this.ToActionResult(
+                    result.Error);
+            }
+
+            return NoContent();
         }
 
     }
