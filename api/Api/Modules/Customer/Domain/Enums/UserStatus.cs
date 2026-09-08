@@ -1,10 +1,9 @@
 ﻿namespace Api.Modules.Customer.Domain.Enums
 {
-    public enum UserStatus : byte
+    public enum UserStatus
     {
-        //PendingVerification = 0,
-        Inactive = 0,
-        Active = 1,
-        Blocked = 2
+        Inactive,
+        Active,
+        Blocked
     }
 }

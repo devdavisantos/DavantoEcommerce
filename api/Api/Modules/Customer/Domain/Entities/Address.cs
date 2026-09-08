@@ -1,4 +1,5 @@
 ﻿using Api.Modules.Customer.Domain.Errors;
+using Api.Modules.Customer.Domain.Enums;
 using Api.Shared.Domain;
 
 namespace Api.Modules.Customer.Domain.Entities
@@ -18,7 +19,7 @@ namespace Api.Modules.Customer.Domain.Entities
         public string City { get; private set; } = string.Empty;
         public string State { get; private set; } = string.Empty;
         public string Country { get; private set; } = string.Empty;
-        public bool Active { get; private set; }
+        public AddressStatus Status { get; private set; }
         public bool IsDefault { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime UpdatedAt { get; private set; }
@@ -181,8 +182,7 @@ namespace Api.Modules.Customer.Domain.Entities
                 City = cityResult.Value,
                 State = stateResult.Value,
                 Country = countryResult.Value,
-
-                Active = true,
+                Status = AddressStatus.Active,
                 IsDefault = isDefault,
 
                 CreatedAt = now,
@@ -206,7 +206,7 @@ namespace Api.Modules.Customer.Domain.Entities
             string city,
             string state,
             string country,
-            bool active,
+            AddressStatus status,
             bool isDefault,
             DateTime createdAt,
             DateTime updatedAt)
@@ -216,7 +216,6 @@ namespace Api.Modules.Customer.Domain.Entities
                 Id = id,
                 ExternalId = externalId,
                 UserId = userId,
-
                 Name = name,
                 RecipientName = recipientName,
                 PostalCode = postalCode,
@@ -227,38 +226,36 @@ namespace Api.Modules.Customer.Domain.Entities
                 City = city,
                 State = state,
                 Country = country,
-
-                Active = active,
+                Status = status,
                 IsDefault = isDefault,
-
                 CreatedAt = createdAt,
                 UpdatedAt = updatedAt
             };
         }
 
         public Result Update(
-    bool hasName,
-    string? name,
-    bool hasRecipientName,
-    string? recipientName,
-    bool hasPostalCode,
-    string? postalCode,
-    bool hasStreet,
-    string? street,
-    bool hasNumber,
-    string? number,
-    bool hasComplement,
-    string? complement,
-    bool hasDistrict,
-    string? district,
-    bool hasCity,
-    string? city,
-    bool hasState,
-    string? state,
-    bool hasCountry,
-    string? country)
+            bool hasName,
+            string? name,
+            bool hasRecipientName,
+            string? recipientName,
+            bool hasPostalCode,
+            string? postalCode,
+            bool hasStreet,
+            string? street,
+            bool hasNumber,
+            string? number,
+            bool hasComplement,
+            string? complement,
+            bool hasDistrict,
+            string? district,
+            bool hasCity,
+            string? city,
+            bool hasState,
+            string? state,
+            bool hasCountry,
+            string? country)
         {
-            if (!Active)
+            if (Status != AddressStatus.Active)
             {
                 return Result.Failure(
                     AddressErrors.InactiveAddress);
@@ -464,7 +461,7 @@ namespace Api.Modules.Customer.Domain.Entities
 
         public Result SetAsDefault()
         {
-            if (!Active)
+            if (Status != AddressStatus.Active)
             {
                 return Result.Failure(
                     AddressErrors.InactiveAddress);
@@ -496,12 +493,12 @@ namespace Api.Modules.Customer.Domain.Entities
 
         public Result Inactive()
         {
-            if (!Active)
+            if (Status != AddressStatus.Active)
             {
                 return Result.Success();
             }
 
-            Active = false;
+            Status = AddressStatus.Inactive;
             IsDefault = false;
             UpdatedAt = DateTime.UtcNow;
 

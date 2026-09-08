@@ -165,6 +165,15 @@ namespace Api.Modules.Customer.Application.Auth.ResetPassword
 
             try
             {
+                var deactivateResult = currentLogin.Deactivate();
+
+                if (deactivateResult.IsFailure)
+                {
+                    await _dbSession.RollbackAsync(cancellationToken);
+
+                    return Result.Failure(deactivateResult.Error);
+                }
+
                 await _loginRepository.DeactivateAsync(
                     currentLogin,
                     cancellationToken);

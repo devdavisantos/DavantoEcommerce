@@ -60,6 +60,15 @@ namespace Api.Modules.Customer.Application.Auth.Delete
 
                 if (login is not null)
                 {
+                    var deactivateResult = login.Deactivate();
+
+                    if (deactivateResult.IsFailure)
+                    {
+                        await _dbSession.RollbackAsync(cancellationToken);
+
+                        return Result.Failure(deactivateResult.Error);
+                    }
+
                     await _loginRepository.DeactivateAsync(login, cancellationToken);
 
                     await _refreshTokenRepository.RevokeAllByLoginIdAsync(login.Id, cancellationToken);

@@ -1,5 +1,6 @@
 ﻿using Api.Modules.Customer.Domain.Entities;
 using Api.Modules.Customer.Domain.Repositories;
+using Api.Modules.Customer.Domain.Enums;
 using Api.Modules.Customer.Infrastructure.Persistence.Models;
 using Api.Shared.Database;
 using Dapper;
@@ -17,8 +18,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
             _dbSession = dbSession;
         }
 
-        public async Task<IReadOnlyList<Address>>
-            GetActiveByUserIdAsync(
+        public async Task<IReadOnlyList<Address>>GetActiveByUserIdAsync(
                 ulong userId,
                 CancellationToken cancellationToken = default)
         {
@@ -37,13 +37,13 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     city AS City,
                     state AS State,
                     country AS Country,
-                    active AS Active,
+                    status AS Status,
                     is_default AS IsDefault,
                     created_at AS CreatedAt,
                     updated_at AS UpdatedAt
                 FROM customer.addresses
                 WHERE user_id = @UserId
-                  AND active = TRUE
+                  AND status = 'ACTIVE'
                 ORDER BY
                     is_default DESC,
                     created_at DESC;
@@ -67,8 +67,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 .ToList();
         }
 
-        public async Task<Address?>
-            GetByExternalIdAndUserIdAsync(
+        public async Task<Address?>GetByExternalIdAndUserIdAsync(
                 Guid externalId,
                 ulong userId,
                 CancellationToken cancellationToken = default)
@@ -88,7 +87,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     city AS City,
                     state AS State,
                     country AS Country,
-                    active AS Active,
+                    status AS Status,
                     is_default AS IsDefault,
                     created_at AS CreatedAt,
                     updated_at AS UpdatedAt
@@ -141,13 +140,13 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     city AS City,
                     state AS State,
                     country AS Country,
-                    active AS Active,
+                    status AS Status,
                     is_default AS IsDefault,
                     created_at AS CreatedAt,
                     updated_at AS UpdatedAt
                 FROM customer.addresses
                 WHERE user_id = @UserId
-                  AND active = TRUE
+                  AND status = 'ACTIVE'
                   AND id <> @ExcludeAddressId
                 ORDER BY created_at ASC
                 LIMIT 1;
@@ -185,7 +184,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     SELECT 1
                     FROM customer.addresses
                     WHERE user_id = @UserId
-                      AND active = TRUE
+                      AND status = 'ACTIVE'
                 );
                 """;
 
@@ -221,7 +220,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     city,
                     state,
                     country,
-                    active,
+                    status,
                     is_default,
                     created_at,
                     updated_at
@@ -240,7 +239,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     @City,
                     @State,
                     @Country,
-                    @Active,
+                    @Status,
                     @IsDefault,
                     @CreatedAt,
                     @UpdatedAt
@@ -268,7 +267,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     address.City,
                     address.State,
                     address.Country,
-                    address.Active,
+                    Status = MapStatus(address.Status),
                     address.IsDefault,
                     address.CreatedAt,
                     address.UpdatedAt
@@ -297,7 +296,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     city = @City,
                     state = @State,
                     country = @Country,
-                    active = @Active,
+                    status = @Status,
                     is_default = @IsDefault,
                     updated_at = @UpdatedAt
                 WHERE id = @Id
@@ -323,7 +322,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     address.City,
                     address.State,
                     address.Country,
-                    address.Active,
+                    Status = MapStatus(address.Status),
                     address.IsDefault,
                     address.UpdatedAt
                 },
@@ -344,7 +343,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     is_default = FALSE,
                     updated_at = UTC_TIMESTAMP()
                 WHERE user_id = @UserId
-                  AND active = TRUE
+                  AND status = 'ACTIVE'
                   AND is_default = TRUE;
                 """;
 
@@ -361,8 +360,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 .ExecuteAsync(command);
         }
 
-        private static Address Map(
-            AddressRow row)
+        private static Address Map(AddressRow row)
         {
             return Address.Restore(
                 row.Id,
@@ -378,10 +376,34 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 row.City,
                 row.State,
                 row.Country,
-                row.Active,
+                MapStatus(row.Status),
                 row.IsDefault,
                 row.CreatedAt,
                 row.UpdatedAt);
         }
+
+        private static AddressStatus MapStatus(string status)
+        {
+            return status switch
+            {
+                "ACTIVE" => AddressStatus.Active,
+                "INACTIVE" => AddressStatus.Inactive,
+
+                _ => throw new InvalidOperationException(
+                    $"Unknown address status: {status}")
+            };
+        }
+
+        private static string MapStatus(AddressStatus status)
+        {
+            return status switch
+            {
+                AddressStatus.Active => "ACTIVE",
+                AddressStatus.Inactive => "INACTIVE",
+
+                _ => throw new ArgumentOutOfRangeException(nameof(status))
+            };
+        }
+
     }
 }

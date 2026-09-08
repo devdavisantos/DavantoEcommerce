@@ -8,13 +8,14 @@ CREATE TABLE IF NOT EXISTS users (
     document VARCHAR(30) NULL,
     email VARCHAR(255) NOT NULL,
     phone VARCHAR(20) NULL, -- E.164 format
-    status TINYINT UNSIGNED NOT NULL DEFAULT 1,
+    status ENUM('INACTIVE', 'ACTIVE', 'BLOCKED') NOT NULL DEFAULT 'ACTIVE',
     email_confirmed_at DATETIME NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at DATETIME NULL,
 
     PRIMARY KEY (id),
+
     UNIQUE KEY uq_users_external_id (external_id),
     UNIQUE KEY uq_users_stripe_customer_id (stripe_customer_id),
     UNIQUE KEY uq_users_document (document),
@@ -25,13 +26,14 @@ CREATE TABLE IF NOT EXISTS logins (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     user_id BIGINT UNSIGNED NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    active BOOLEAN NOT NULL DEFAULT TRUE,
+    status ENUM('INACTIVE', 'ACTIVE') NOT NULL DEFAULT 'ACTIVE',
     last_login_at DATETIME NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     
     PRIMARY KEY (id),
+
     KEY ix_logins_user_id (user_id),
-    KEY ix_logins_user_active (user_id, active),
+    KEY ix_logins_user_active (user_id, status),
 
     CONSTRAINT fk_logins_users
         FOREIGN KEY (user_id)
@@ -76,7 +78,7 @@ CREATE TABLE IF NOT EXISTS addresses (
     city VARCHAR(255) NOT NULL,
     state VARCHAR(255) NOT NULL,
     country VARCHAR(255) NOT NULL,
-    active BOOLEAN NOT NULL DEFAULT TRUE,
+    status ENUM('INACTIVE', 'ACTIVE') NOT NULL DEFAULT 'ACTIVE',
     is_default BOOLEAN NOT NULL DEFAULT FALSE,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -86,8 +88,8 @@ CREATE TABLE IF NOT EXISTS addresses (
     UNIQUE KEY uq_addresses_external_id (external_id),
 
     KEY ix_addresses_user_id (user_id),
-    KEY ix_addresses_user_active (user_id, active),
-    KEY ix_addresses_user_default (user_id, is_default, active),
+    KEY ix_addresses_user_active (user_id, status),
+    KEY ix_addresses_user_default (user_id, is_default, status),
 
     CONSTRAINT fk_addresses_users
         FOREIGN KEY (user_id)

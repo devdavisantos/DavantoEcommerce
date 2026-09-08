@@ -122,6 +122,14 @@ namespace Api.Modules.Customer.Application.Auth.ChangePassword
 
             try
             {
+                var deactivateResult = currentLogin.Deactivate();
+
+                if (deactivateResult.IsFailure)
+                {
+                    return Result.Failure(
+                        deactivateResult.Error);
+                }
+
                 await _loginRepository.DeactivateAsync(
                     currentLogin,
                     cancellationToken);

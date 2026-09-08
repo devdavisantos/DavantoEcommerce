@@ -9,10 +9,10 @@
         public string Email { get; init; } = string.Empty;
         public string? Document { get; init; }
         public string? Phone { get; init; }
-        public byte Status { get; init; }
+        public string Status { get; init; } = string.Empty;
         public DateTime? EmailConfirmedAt { get; init; }
         public DateTime CreatedAt { get; init; }
         public DateTime UpdatedAt { get; init; }
-        public DateTime? DeleteAt { get; init; }
+        public DateTime? DeletedAt { get; init; }
     }
 }

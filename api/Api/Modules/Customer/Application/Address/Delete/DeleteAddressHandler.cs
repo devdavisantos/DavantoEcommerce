@@ -1,4 +1,5 @@
 ﻿using Api.Modules.Customer.Domain.Errors;
+using Api.Modules.Customer.Domain.Enums;
 using Api.Modules.Customer.Domain.Repositories;
 using Api.Shared.Database;
 using Api.Shared.Domain;
@@ -49,7 +50,7 @@ namespace Api.Modules.Customer.Application.Address.Delete
                     AddressErrors.NotFound);
             }
 
-            if (!address.Active)
+            if (address.Status != AddressStatus.Active)
             {
                 return Result.Failure(
                     AddressErrors.InactiveAddress);

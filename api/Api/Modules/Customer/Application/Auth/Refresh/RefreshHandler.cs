@@ -77,7 +77,7 @@ namespace Api.Modules.Customer.Application.Auth.Refresh
                 return Result.Failure<RefreshResponse>(RefreshTokenErrors.InvalidToken);
             }
 
-            if (!login.Active)
+            if (login.Status != LoginStatus.Active)
             {
                 return Result.Failure<RefreshResponse>(RefreshTokenErrors.InactiveLogin);
             }

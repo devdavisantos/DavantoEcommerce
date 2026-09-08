@@ -1,4 +1,5 @@
 ﻿using Api.Modules.Customer.Domain.Entities;
+using Api.Modules.Customer.Domain.Enums;
 using Api.Modules.Customer.Domain.Errors;
 using Api.Shared.Domain;
 
@@ -9,7 +10,7 @@ namespace Api.Modules.Customer.Domain.Entities
         public ulong Id { get; private set; }
         public ulong UserId { get; private set; }
         public string PasswordHash { get; private set; } = string.Empty;
-        public bool Active { get; private set; }
+        public LoginStatus Status { get; private set; }
         public DateTime? LastLoginAt { get; private set; }
         public DateTime CreatedAt { get; private set; }
 
@@ -35,7 +36,7 @@ namespace Api.Modules.Customer.Domain.Entities
             {
                 UserId = userId,
                 PasswordHash = passwordHash,
-                Active = true,
+                Status = LoginStatus.Active,
                 LastLoginAt = null,
                 CreatedAt = DateTime.UtcNow
             };
@@ -47,7 +48,7 @@ namespace Api.Modules.Customer.Domain.Entities
             ulong id,
             ulong userId,
             string passwordHash,
-            bool active,
+            LoginStatus status,
             DateTime? lastLoginAt,
             DateTime createdAt)
         {
@@ -56,7 +57,7 @@ namespace Api.Modules.Customer.Domain.Entities
                 Id = id,
                 UserId = userId,
                 PasswordHash = passwordHash,
-                Active = active,
+                Status = status,
                 LastLoginAt = lastLoginAt,
                 CreatedAt = createdAt
             };
@@ -64,7 +65,7 @@ namespace Api.Modules.Customer.Domain.Entities
 
         public Result RegisterSuccessfulLogin()
         {
-            if (!Active)
+            if (Status != LoginStatus.Active)
             {
                 return Result.Failure(
                     LoginErrors.Inactive);
@@ -77,10 +78,10 @@ namespace Api.Modules.Customer.Domain.Entities
 
         public Result Deactivate()
         {
-            if (!Active)
+            if (Status != LoginStatus.Active)
                 return Result.Success();
 
-            Active = false;
+            Status = LoginStatus.Inactive;
 
             return Result.Success();
         }

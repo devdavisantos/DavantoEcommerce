@@ -1,6 +1,7 @@
 ﻿using Api.Modules.Customer.Domain.Entities;
 using Api.Modules.Customer.Domain.Repositories;
 using Api.Modules.Customer.Infrastructure.Persistence.Models;
+using Api.Modules.Customer.Domain.Enums;
 using Api.Shared.Database;
 using Dapper;
 
@@ -22,12 +23,12 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     id AS Id,
                     user_id AS UserId,
                     password_hash AS PasswordHash,
-                    active AS Active,
+                    status AS Status,
                     last_login_at AS LastLoginAt,
                     created_at AS CreatedAt
                 FROM customer.logins
                 WHERE user_id = @UserId
-                AND active = TRUE
+                AND status = 'ACTIVE'
                 ORDER BY created_at DESC
                 LIMIT 1;
                 """;
@@ -59,7 +60,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 id AS Id,
                 user_id AS UserId,
                 password_hash AS PasswordHash,
-                active AS Active,
+                status AS Status,
                 last_login_at AS LastLoginAt,
                 created_at AS CreatedAt
             FROM customer.logins
@@ -95,7 +96,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
             (
                 user_id,
                 password_hash,
-                active,
+                status,
                 last_login_at,
                 created_at
             )
@@ -103,7 +104,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
             (
                 @UserId,
                 @PasswordHash,
-                @Active,
+                @Status,
                 @LastLoginAt,
                 @CreatedAt
             );
@@ -119,7 +120,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 {
                     login.UserId,
                     login.PasswordHash,
-                    login.Active,
+                    Status = MapStatus(login.Status),
                     login.LastLoginAt,
                     login.CreatedAt
                 },
@@ -137,7 +138,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
             UPDATE customer.logins
             SET last_login_at = @LastLoginAt
             WHERE id = @Id
-              AND active = TRUE;
+              AND status = 'ACTIVE';
             """;
 
             await _dbSession.OpenConnectionAsync(cancellationToken);
@@ -162,7 +163,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
         {
             const string sql = """
             UPDATE customer.logins
-            SET active = FALSE
+            SET status = @Status
             WHERE id = @Id;
             """;
 
@@ -172,7 +173,8 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 sql,
                 new
                 {
-                    login.Id
+                    login.Id,
+                    Status = MapStatus(login.Status)
                 },
                 transaction: _dbSession.Transaction,
                 cancellationToken: cancellationToken);
@@ -186,9 +188,32 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 row.Id,
                 row.UserId,
                 row.PasswordHash,
-                row.Active,
+                MapStatus(row.Status),
                 row.LastLoginAt,
                 row.CreatedAt);
+        }
+
+        private static LoginStatus MapStatus(string status)
+        {
+            return status switch
+            {
+                "ACTIVE" => LoginStatus.Active,
+                "INACTIVE" => LoginStatus.Inactive,
+
+                _ => throw new InvalidOperationException(
+                    $"Unknown login status: {status}")
+            };
+        }
+
+        private static string MapStatus(LoginStatus status)
+        {
+            return status switch
+            {
+                LoginStatus.Active => "ACTIVE",
+                LoginStatus.Inactive => "INACTIVE",
+
+                _ => throw new ArgumentOutOfRangeException(nameof(status))
+            };
         }
 
     }

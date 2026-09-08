@@ -48,11 +48,11 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
             var row = await _dbSession.Connection.QuerySingleOrDefaultAsync<UserRow>(command);
 
             return row is null
-                ? null 
+                ? null
                 : Map(row);
         }
-        
-        public async Task<User?> GetByExternalIdAsync(Guid externalId,  CancellationToken cancellationToken = default)
+
+        public async Task<User?> GetByExternalIdAsync(Guid externalId, CancellationToken cancellationToken = default)
         {
             const string sql = """
                 SELECT
@@ -84,7 +84,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 transaction: _dbSession.Transaction,
                 cancellationToken: cancellationToken);
 
-            var row = await _dbSession.Connection.QuerySingleOrDefaultAsync<UserRow> (command);
+            var row = await _dbSession.Connection.QuerySingleOrDefaultAsync<UserRow>(command);
 
             return row is null
                 ? null
@@ -231,7 +231,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     user.Email,
                     user.Document,
                     user.Phone,
-                    Status = (byte)user.Status,
+                    Status = MapStatus(user.Status),
                     user.EmailConfirmedAt,
                     user.CreatedAt,
                     user.UpdatedAt,
@@ -282,7 +282,7 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                     user.Email,
                     user.Document,
                     user.Phone,
-                    Status = (byte)user.Status,
+                    Status = MapStatus(user.Status),
                     user.EmailConfirmedAt,
                     user.UpdatedAt,
                     user.DeletedAt
@@ -332,11 +332,37 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 row.Email,
                 row.Document,
                 row.Phone,
-                (UserStatus)row.Status,
+                MapStatus(row.Status),
                 row.EmailConfirmedAt,
                 row.CreatedAt,
                 row.UpdatedAt,
-                row.DeleteAt);
+                row.DeletedAt);
         }
+
+        private static UserStatus MapStatus(string status)
+        {
+            return status switch
+            {
+                "ACTIVE" => UserStatus.Active,
+                "INACTIVE" => UserStatus.Inactive,
+                "BLOCKED" => UserStatus.Blocked,
+
+                _ => throw new InvalidOperationException(
+                    $"Unknown user status: {status}")
+            };
+        }
+
+        private static string MapStatus(UserStatus status)
+        {
+            return status switch
+            {
+                UserStatus.Active => "ACTIVE",
+                UserStatus.Inactive => "INACTIVE",
+                UserStatus.Blocked => "BLOCKED",
+
+                _ => throw new ArgumentOutOfRangeException(nameof(status))
+            };
+        }
+
     }
 }

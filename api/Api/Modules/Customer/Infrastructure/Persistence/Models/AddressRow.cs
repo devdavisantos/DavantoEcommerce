@@ -15,7 +15,7 @@
         public string City { get; init; } = string.Empty;
         public string State { get; init; } = string.Empty;
         public string Country { get; init; } = string.Empty;
-        public bool Active { get; init; }
+        public string Status { get; init; } = string.Empty;
         public bool IsDefault { get; init; }
         public DateTime CreatedAt { get; init; }
         public DateTime UpdatedAt { get; init; }
