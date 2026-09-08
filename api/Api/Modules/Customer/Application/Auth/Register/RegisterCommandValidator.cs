@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Api.Modules.Customer.Application.Common.Validation;
+using FluentValidation;
 
 namespace Api.Modules.Customer.Application.Auth.Register
 {
@@ -22,13 +23,16 @@ namespace Api.Modules.Customer.Application.Auth.Register
 
             RuleFor(x => x.Password)
                 .NotEmpty()
-                .WithMessage("Password is required.")
-                .MinimumLength(8)
                 .WithMessage(
-                    "Password must contain at least 8 characters.")
-                .MaximumLength(128)
+                    PasswordPolicy.RequiredMessage)
+                .MinimumLength(
+                    PasswordPolicy.MinimumLength)
                 .WithMessage(
-                    "Password cannot exceed 128 characters.");
+                    PasswordPolicy.MinimumLengthMessage)
+                .MaximumLength(
+                    PasswordPolicy.MaximumLength)
+                .WithMessage(
+                    PasswordPolicy.MaximumLengthMessage);
         }
     }
 }

@@ -23,5 +23,9 @@ namespace Api.Modules.Customer.Domain.Errors
         public static readonly Error UserInactive = new(
             "Customer.ChangePassword.UserInactive",
             "The user account is inactive");
+
+        public static Error Validation(string message) => new(
+            "Customer.ChangePassword.Validation",
+            message);
     }
 }

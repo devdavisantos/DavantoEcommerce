@@ -43,5 +43,9 @@ namespace Api.Modules.Customer.Domain.Errors
         public static readonly Error SamePassword = new(
             "Customer.PasswordReset.SamePassword",
             "The new password must be different from the current password.");
+
+        public static Error Validation(string message) => new(
+            "Customer.PasswordReset.Validation",
+            message);
     }
 }

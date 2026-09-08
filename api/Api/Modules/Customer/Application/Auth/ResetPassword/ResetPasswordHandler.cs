@@ -6,6 +6,7 @@ using Api.Modules.Customer.Domain.Errors;
 using Api.Modules.Customer.Domain.Repositories;
 using Api.Shared.Database;
 using Api.Shared.Domain;
+using FluentValidation;
 using LoginEntity = Api.Modules.Customer.Domain.Entities.Login;
 
 namespace Api.Modules.Customer.Application.Auth.ResetPassword
@@ -19,6 +20,7 @@ namespace Api.Modules.Customer.Application.Auth.ResetPassword
         private readonly IAccountTokenGenerator _accountTokenGenerator;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IDbSession _dbSession;
+        private readonly IValidator<ResetPasswordCommand> _validator;
 
         public ResetPasswordHandler(
             IUserRepository userRepository,
@@ -27,30 +29,36 @@ namespace Api.Modules.Customer.Application.Auth.ResetPassword
             Abstractions.Persistence.IRefreshTokenRepository refreshTokenRepository,
             IAccountTokenGenerator accountTokenGenerator,
             IPasswordHasher passwordHasher,
-            IDbSession dbSession)
+            IDbSession dbSession,
+            IValidator<ResetPasswordCommand> validator)
         {
             _userRepository = userRepository;
             _loginRepository = loginRepository;
-            _accountActionRequestRepository =
-                accountActionRequestRepository;
-            _refreshTokenRepository =
-                refreshTokenRepository;
-            _accountTokenGenerator =
-                accountTokenGenerator;
-            _passwordHasher =
-                passwordHasher;
-            _dbSession =
-                dbSession;
+            _accountActionRequestRepository = accountActionRequestRepository;
+            _refreshTokenRepository = refreshTokenRepository;
+            _accountTokenGenerator = accountTokenGenerator;
+            _passwordHasher = passwordHasher;
+            _dbSession = dbSession;
+            _validator = validator;
         }
 
         public async Task<Result> HandleAsync(
             ResetPasswordCommand command,
             CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrWhiteSpace(command.Token))
+            var validationResult = await _validator.ValidateAsync(
+                command,
+                cancellationToken);
+
+            if (!validationResult.IsValid)
             {
+                var message = validationResult.Errors
+                    .First()
+                    .ErrorMessage;
+
                 return Result.Failure(
-                    PasswordResetErrors.InvalidToken);
+                    PasswordResetErrors.Validation(
+                        message));
             }
 
             var tokenHash =

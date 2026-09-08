@@ -97,6 +97,10 @@ builder.Services.AddScoped<Api.Modules.Customer.Application.Abstractions.Persist
 
 builder.Services.AddScoped<IValidator<RegisterCommand>, RegisterCommandValidator>();
 
+builder.Services.AddScoped<IValidator<ResetPasswordCommand>, ResetPasswordCommandValidator>();
+
+builder.Services.AddScoped<IValidator<ChangePasswordCommand>, ChangePasswordCommandValidator>();
+
 builder.Services.AddScoped<RegisterHandler>();
 
 builder.Services.AddScoped<LoginHandler>();
@@ -181,8 +185,8 @@ if (app.Environment.IsDevelopment())
 }
 
 // Para rodar no docker prod
-//app.UseSwagger();
-//app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

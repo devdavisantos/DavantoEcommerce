@@ -93,6 +93,12 @@ namespace Api.Controllers.Extensions
                 "Customer.ChangePassword.UserInactive"
                     => controller.Unauthorized(response),
 
+                "Customer.PasswordReset.Validation"
+                    => controller.BadRequest(response),
+
+                "Customer.ChangePassword.Validation"
+                    => controller.BadRequest(response),
+
                 // Change Email
                 "Customer.EmailChange.UserNotFound"
                     => controller.NotFound(response),

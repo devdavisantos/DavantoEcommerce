@@ -12,6 +12,7 @@ using Api.Controllers.Requests.Auth;
 using Api.Modules.Customer.Application.Auth.ChangePassword;
 using Microsoft.AspNetCore.Authorization;
 using LoginEntity = Api.Modules.Customer.Domain.Entities.Login;
+using FluentValidation;
 
 namespace Api.Modules.Customer.Application.Auth.ChangePassword
 {
@@ -22,25 +23,43 @@ namespace Api.Modules.Customer.Application.Auth.ChangePassword
         private readonly Abstractions.Persistence.IRefreshTokenRepository _refreshTokenRepository;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IDbSession _dbSession;
+        private readonly IValidator<ChangePasswordCommand> _validator;
 
         public ChangePasswordHandler(
             IUserRepository userRepository,
             ILoginRepository loginRepository,
             Abstractions.Persistence.IRefreshTokenRepository refreshTokenRepository,
             IPasswordHasher passwordHasher,
-            IDbSession dbSession)
+            IDbSession dbSession,
+            IValidator<ChangePasswordCommand> validator)
         {
             _userRepository = userRepository;
             _loginRepository = loginRepository;
             _refreshTokenRepository = refreshTokenRepository;
             _passwordHasher = passwordHasher;
             _dbSession = dbSession;
+            _validator = validator;
         }
 
         public async Task<Result> HandleAsync(
             ChangePasswordCommand command,
             CancellationToken cancellationToken = default)
         {
+            var validationResult = await _validator.ValidateAsync(
+                command,
+                cancellationToken);
+
+            if (!validationResult.IsValid)
+            {
+                var message = validationResult
+                    .Errors
+                    .First()
+                    .ErrorMessage;
+
+                return Result.Failure(
+                    ChangePasswordErrors.Validation(message));
+            }
+
             var user = await  _userRepository.GetByExternalIdAsync(
                 command.UserExternalId,
                 cancellationToken);
