@@ -13,3 +13,5 @@ obj/
 
 # Commenting not to upload the bank data for now
 /Database/mysql_data
+
+/api/Api/appsettings.Development.json
