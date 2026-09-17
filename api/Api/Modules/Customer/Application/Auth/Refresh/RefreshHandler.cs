@@ -1,4 +1,4 @@
-﻿using Api.Modules.Customer.Application.Abstractions.Authentication;
+using Api.Modules.Customer.Application.Abstractions.Authentication;
 using Api.Modules.Customer.Application.Abstractions.Persistence;
 using Api.Modules.Customer.Domain.Entities;
 using Api.Modules.Customer.Domain.Repositories;
@@ -101,7 +101,7 @@ namespace Api.Modules.Customer.Application.Auth.Refresh
                     RefreshTokenErrors.UserInactive);
             }
 
-            var accessToken = _jwtService.GenerateAccessToken(user);
+            var accessToken = _jwtService.GenerateAccessToken(user, currentRefreshToken.ExpiresAt);
 
             var generatedRefreshToken = _refreshTokenGenerator.Generate();
 
@@ -110,7 +110,7 @@ namespace Api.Modules.Customer.Application.Auth.Refresh
             var newRefreshTokenResult = RefreshToken.Create(
                 loginId: login.Id,
                 tokenHash: newRefreshTokenHash,
-                expiresAt: generatedRefreshToken.ExpiresAtUtc,
+                expiresAt: currentRefreshToken.ExpiresAt,
                 device: currentRefreshToken.Device,
                 ipAddress: currentRefreshToken.IpAddress
                 );
@@ -154,9 +154,11 @@ namespace Api.Modules.Customer.Application.Auth.Refresh
                 new RefreshResponse(
                     accessToken.Token,
                     accessToken.ExpiresAtUtc,
-                    generatedRefreshToken.Token));
+                    generatedRefreshToken.Token,
+                    currentRefreshToken.ExpiresAt));
 
         }
 
     }
 }
+

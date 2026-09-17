@@ -18,7 +18,7 @@ namespace Api.Modules.Customer.Infrastructure.Authentication
             _settings = options.Value;
         }
 
-        public AccessTokenResult GenerateAccessToken(User user)
+        public AccessTokenResult GenerateAccessToken(User user, DateTime? sessionExpiresAtUtc = null)
         {
             var claims = new List<Claim>
         {
@@ -41,6 +41,9 @@ namespace Api.Modules.Customer.Infrastructure.Authentication
 
             var expiration = DateTime.UtcNow.AddMinutes(
                 _settings.AccessTokenExpirationMinutes);
+
+            if (sessionExpiresAtUtc.HasValue && expiration > sessionExpiresAtUtc.Value)
+                expiration = sessionExpiresAtUtc.Value;
 
             var token = new JwtSecurityToken(
                 issuer: _settings.Issuer,

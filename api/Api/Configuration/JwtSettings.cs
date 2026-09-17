@@ -1,4 +1,4 @@
-﻿namespace Api.Configuration
+namespace Api.Configuration
 {
     public sealed class JwtSettings
     {
@@ -10,3 +10,6 @@
         public int RefreshTokenExpirationDays { get; init; }
     }
 }
+
+
+

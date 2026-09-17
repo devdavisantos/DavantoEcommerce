@@ -59,6 +59,19 @@ namespace Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginCommand command, CancellationToken cancellationToken)
         {
+            // Always overwrite metadata from the request body with server-observed values.
+            var peer = LoginDevice.NormalizeIp(HttpContext.Connection.RemoteIpAddress?.ToString());
+            var configuration = HttpContext.RequestServices.GetRequiredService<IConfiguration>();
+            var trustedPeers = configuration.GetSection("LoginProxy:KnownProxies").Get<string[]>() ?? [];
+            var trustedProxy = peer != null && trustedPeers.Any(ip => LoginDevice.NormalizeIp(ip) == peer);
+            var fromFrontend = Request.Headers["X-Lastore-Proxy"] == "1";
+            var ip = fromFrontend
+                ? trustedProxy ? LoginDevice.NormalizeIp(Request.Headers["X-Lastore-Client-IP"].ToString()) : null
+                : peer;
+            command = command with {
+                Device = LoginDevice.Describe(Request.Headers.UserAgent.ToString()),
+                IpAddress = ip
+            };
             var result = await _loginHandler.HandleAsync(command, cancellationToken);
 
             if (result.IsFailure)

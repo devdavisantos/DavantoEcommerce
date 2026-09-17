@@ -233,7 +233,7 @@ namespace Api.Modules.Customer.Domain.Entities
             bool hasPhone,
             string? phone)
         {
-            Result<string> nameResult = null;
+            Result<string>? nameResult = null;
             Result<string?>? documentResult = null;
             Result<string?>? phoneResult = null;
 

@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text;
 using Api.Modules.Customer.Application.Abstractions.Authentication;
 using Api.Configuration;
@@ -22,8 +22,7 @@ namespace Api.Modules.Customer.Infrastructure.Authentication
 
             var token = Convert.ToBase64String(bytes);
 
-            var expiresAtUtc = DateTime.UtcNow.AddDays(
-                _jwtSettings.RefreshTokenExpirationDays);
+            var expiresAtUtc = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays);
 
             return new RefreshTokenResult(token, expiresAtUtc);
         }
@@ -38,3 +37,6 @@ namespace Api.Modules.Customer.Infrastructure.Authentication
         }
     }
 }
+
+
+

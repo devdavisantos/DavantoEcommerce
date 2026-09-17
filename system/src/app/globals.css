@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+* {
+  box-sizing: border-box;
+  /* padding: 0; */
+  /* margin: 0; */
+}
+
 @theme {
   --color-charcoal-dark: #1A1D23;
   --color-charcoal-gray: #31363F;
@@ -44,12 +50,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  /* padding: 0; */
-  /* margin: 0; */
-}
-
 a {
   color: inherit;
   text-decoration: none;
@@ -59,4 +59,27 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+.account-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #4b5563 transparent;
+  scrollbar-gutter: stable;
+}
+
+.account-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.account-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.account-scroll::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 999px;
+}
+
+.account-scroll::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
 }

@@ -45,6 +45,10 @@ builder.Services.AddOptions<JwtSettings>()
         settings => !string.IsNullOrWhiteSpace(
             settings.Audience),
         "JWT Audience is required.")
+    .Validate(settings => settings.AccessTokenExpirationMinutes > 0,
+        "JWT access token expiration must be positive.")
+    .Validate(settings => settings.RefreshTokenExpirationDays > 0,
+        "JWT refresh token expiration in days must be positive.")
     .ValidateOnStart();
 
 builder.Services
@@ -196,3 +200,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+
+

@@ -11,7 +11,7 @@ export default function StoreLayout({
     <>
       <Header />
         <main className="pt-20 min-h-screen bg-deep-dark">
-          {children}
+            {children}
         </main>
       <Footer />
       <BackToTop/>

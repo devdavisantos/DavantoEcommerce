@@ -1,4 +1,4 @@
-﻿using Api.Modules.Customer.Domain.Errors;
+using Api.Modules.Customer.Domain.Errors;
 using Api.Shared.Domain;
 
 namespace Api.Modules.Customer.Domain.Entities
@@ -56,7 +56,7 @@ namespace Api.Modules.Customer.Domain.Entities
             {
                 LoginId = loginId,
                 TokenHash = tokenHash,
-                ExpiresAt = expiresAt,
+                ExpiresAt = DateTime.SpecifyKind(expiresAt, DateTimeKind.Utc),
                 RevokedAt = null,
                 ReplacedAt = null,
                 CreatedAt = DateTime.UtcNow,
@@ -83,7 +83,7 @@ namespace Api.Modules.Customer.Domain.Entities
                 Id = id,
                 LoginId = loginId,
                 TokenHash = tokenHash,
-                ExpiresAt = expiresAt,
+                ExpiresAt = DateTime.SpecifyKind(expiresAt, DateTimeKind.Utc),
                 RevokedAt = revokedAt,
                 ReplacedAt= replacedAt,
                 CreatedAt = createdAt,

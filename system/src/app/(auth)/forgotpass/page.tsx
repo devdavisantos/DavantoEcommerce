@@ -11,7 +11,12 @@ export default function Login() {
     <div className="h-screen w-screen flex flex-col items-center justify-center bg-charcoal-dark p-4">
 
       <div className="flex justify-center mb-10">
-        <Logo height={200} width={200}/>
+          <Link
+            href="/"
+            aria-label="Go to home"
+            className="incline-flex cursor-pointer">
+            <Logo height={200} width={200} />
+          </Link>
       </div>
 
       <div className="modal w-full max-w-md shadow-xl rounded-2xl p-8 bg-charcoal-gray">

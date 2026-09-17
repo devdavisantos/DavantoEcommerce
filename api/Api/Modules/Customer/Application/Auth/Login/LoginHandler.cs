@@ -1,4 +1,4 @@
-﻿using Api.Modules.Customer.Application.Abstractions.Persistence;
+using Api.Modules.Customer.Application.Abstractions.Persistence;
 using Api.Modules.Customer.Application.Abstractions.Authentication;
 using Api.Modules.Customer.Domain.Entities;
 using Api.Modules.Customer.Domain.Enums;
@@ -86,9 +86,10 @@ namespace Api.Modules.Customer.Application.Auth.Login
 
             await _loginRepository.UpdateLastLoginAsync(login, cancellationToken);
 
-            var accessToken = _jwtService.GenerateAccessToken(user);
+
 
             var generatedRefreshToken = _refreshTokenGenerator.Generate();
+            var accessToken = _jwtService.GenerateAccessToken(user, generatedRefreshToken.ExpiresAtUtc);
 
             var refreshTokenHash = _refreshTokenGenerator.Hash(generatedRefreshToken.Token);
 
@@ -96,8 +97,8 @@ namespace Api.Modules.Customer.Application.Auth.Login
                 loginId: login.Id,
                 tokenHash: refreshTokenHash,
                 expiresAt: generatedRefreshToken.ExpiresAtUtc,
-                device: null,
-                ipAddress: null);
+                device: command.Device,
+                ipAddress: command.IpAddress);
 
             if (refreshTokenResult.IsFailure)
             {
@@ -107,10 +108,16 @@ namespace Api.Modules.Customer.Application.Auth.Login
 
             await _refreshTokenRepository.CreateAsync(refreshTokenResult.Value, cancellationToken);
 
-            var response = new LoginResponse(accessToken.Token, accessToken.ExpiresAtUtc, generatedRefreshToken.Token);
+            var response = new LoginResponse(
+                accessToken.Token,
+                accessToken.ExpiresAtUtc,
+                generatedRefreshToken.Token,
+                generatedRefreshToken.ExpiresAtUtc);
 
             return Result.Success(response);
         }
 
     }
 }
+
+

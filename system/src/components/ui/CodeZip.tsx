@@ -10,7 +10,7 @@ export default function LocationModal() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-1 text-left cursor-pointer group"
+        className="group flex items-center gap-1 text-left px-2 py-2 rounded-lg transition-colors cursor-pointer hover:bg-white/5"
       >
         <MapPin className="text-deep-orange transition group-hover:scale-110" />
 
@@ -27,11 +27,11 @@ export default function LocationModal() {
       {open && (
         <div
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
-          onClick={() => setOpen(false)} // fecha ao clicar fora
+          onClick={() => setOpen(false)}
         >
           <div
             className="bg-charcoal-dark border border-gray-700 p-6 rounded-lg w-auto"
-            onClick={(e) => e.stopPropagation()} // impede fechar ao clicar dentro
+            onClick={(e) => e.stopPropagation()}
           >
             <div className="flex mb-7 justify-between items-center">
               <h2 className="text-lg font-bold">
