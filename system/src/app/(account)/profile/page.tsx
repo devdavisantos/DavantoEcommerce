@@ -212,7 +212,8 @@ export default function ProfilePage() {
   return (
         <>
           <div className="space-y-10">
-            <section className="flex flex-col items-center">
+            
+            {/* <section className="flex flex-col items-center">
               <div className="relative">
                 <div className="flex h-28 w-28 items-center justify-center rounded-full border border-white/10 bg-charcoal-gray">
                   <UserRound size={52} className="text-gray-400" />
@@ -233,7 +234,7 @@ export default function ProfilePage() {
               >
                 Change photo
               </button>
-            </section>
+            </section> */}
 
             <section>
               <div className="mb-5 flex items-center gap-2">

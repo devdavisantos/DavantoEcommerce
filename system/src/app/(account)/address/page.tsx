@@ -1,9 +1,7 @@
 "use client";
 import { authenticatedFetch } from "@/lib/auth-client";
-
 import { useEffect, useState } from "react";
 import { ChevronDown, CircleCheck, CircleX, Edit3, MapPin, Plus, Save, Trash2 } from "@/components/icons/icons";
-
 import CountrySelect from "@/components/ui/CountrySelect";
 import { countries } from "@/data/countries";
 
@@ -36,6 +34,15 @@ type AddressForm = {
   isDefault: boolean;
 };
 
+type PostalCodeResult = {
+  street: string;
+  district: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  countryCode: string;
+};
+
 const initialForm: AddressForm = {
   name: "",
   recipientName: "",
@@ -58,6 +65,8 @@ export default function AddressPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSearchingPostalCode, setIsSearchingPostalCode] = useState(false);
+  const [postalCodeMessage, setPostalCodeMessage] = useState<string | null>(null);
 
   const [showValidation, setShowValidation] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -193,6 +202,50 @@ export default function AddressPage() {
       country: address.country ?? "",
       isDefault: address.isDefault,
     });
+  };
+
+  const handlePostalCodeSearch = async () => {
+    const postalCode = form.zipCode.trim();
+    const countryCode = form.country.trim();
+
+    if (!postalCode || !countryCode || isSearchingPostalCode) return;
+
+    setIsSearchingPostalCode(true);
+    setPostalCodeMessage(null);
+
+    try {
+      const response = await fetch(
+        `/api/location/postal-code?postalCode=${encodeURIComponent(postalCode)}&countryCode=${encodeURIComponent(countryCode)}`,
+        { cache: "no-store" },
+      );
+
+      if (!response.ok) {
+        setPostalCodeMessage("Unable to find this postal code.");
+        return;
+      }
+
+      const results = (await response.json()) as PostalCodeResult[];
+
+      if (results.length === 0) {
+        setPostalCodeMessage("Postal code not found. Enter the address manually.");
+        return;
+      }
+
+      const result = results[0];
+
+      setForm((current) => ({
+        ...current,
+        street: result.street || current.street,
+        district: result.district || current.district,
+        city: result.city || current.city,
+        state: result.state || current.state,
+        zipCode: result.postalCode || current.zipCode,
+      }));
+    } catch {
+      setPostalCodeMessage("Unable to search this postal code.");
+    } finally {
+      setIsSearchingPostalCode(false);
+    }
   };
 
   const handleSave = async () => {
@@ -561,6 +614,7 @@ export default function AddressPage() {
                       type="text"
                       value={form.zipCode}
                       onChange={(e) => handleChange("zipCode", e.target.value)}
+                      onBlur={handlePostalCodeSearch}
                       aria-required="true"
                       className={`w-full rounded-lg border bg-steel-gray px-4 py-3 outline-none transition
                         ${isFieldInvalid("zipCode")
@@ -568,6 +622,18 @@ export default function AddressPage() {
                           : "border-white/10 focus:border-deep-orange"}
                       `}
                     />
+
+                    {isSearchingPostalCode && (
+                      <p className="mt-2 text-xs text-gray-400">
+                        Searching postal code...
+                      </p>
+                    )}
+
+                    {!isSearchingPostalCode && postalCodeMessage && (
+                      <p className="mt-2 text-xs text-gray-400">
+                        {postalCodeMessage}
+                      </p>
+                    )}              
                   </div>
                         
                   {/* COUNTRY */}
@@ -622,10 +688,6 @@ export default function AddressPage() {
                         <p className="text-sm font-medium text-white">
                           Default address
                         </p>
-
-                        <span className="text-red-500">
-                          *
-                        </span>
                       </div>
 
                       <p className="text-xs text-gray-500">
