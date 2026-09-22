@@ -158,3 +158,31 @@ API_BASE_URL e TRUSTED_CLIENT_IP_HEADER=x-real-ip; NODE_ENV=production vem da
 imagem. Fora do Docker, use API_BASE_URL no ambiente do servidor Next.js e
 configure TRUSTED_CLIENT_IP_HEADER apenas atrás de uma entrada confiável.
 HTTPS é necessário para os cookies Secure em produção.
+
+## Sessão administrativa
+
+AdminJwt configura a sessão administrativa independentemente de Jwt (customer).
+O padrão do admin é access token de 15 minutos e refresh token de 1 dia.
+AdminJwt__SecretKey deve ser uma chave própria; no Docker, use
+ADMIN_JWT_SECRET_KEY no .env. O appsettings versionado não contém essa chave.
+
+Os cookies access_token_admin, refresh_token_admin e
+refresh_token_admin_expires_at são HttpOnly e separados dos cookies do cliente.
+A sessão é restaurada ao abrir /admin, renovada perto da expiração e novamente
+verificada ao retornar à aba ou recuperar a conexão. O prazo original nunca
+é estendido pela rotação. Falhas temporárias preservam cookies; disputas entre
+abas mantêm o código de token substituído para permitir recuperação.
+Datas persistidas são interpretadas em UTC. O logout e o aviso de expiração
+afetam somente o admin. Chamadas protegidas administrativas devem usar
+adminAuthenticatedFetch, de src/lib/admin-auth-client.ts, para renovar e
+repetir uma requisição rejeitada com 401 no máximo uma vez.
+Reinicie a API após alterar a configuração e faça novo login.
+
+
+No admin, cada login cria um registro de refresh por sessão. As renovações
+substituem apenas o hash nesse mesmo registro, comparando atomicamente o hash
+anterior. O id, a expiração de 1 dia e os metadados do login são preservados.
+O token anterior deixa de ser válido. Não se guarda o histórico dos hashes
+anteriores; registros existentes não são removidos por essa alteração.
+Outros navegadores e novos logins podem criar sessões independentes.
+O customer mantém sua implementação atual de novos registros por renovação.

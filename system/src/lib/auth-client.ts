@@ -17,7 +17,7 @@ let pending: Promise<Session> | null = null;
 
 export async function withSessionLock<T>(action: () => Promise<T>): Promise<T> {
   if (typeof navigator !== "undefined" && navigator.locks) {
-    return navigator.locks.request("lastore-session", action);
+    return navigator.locks.request("customer-session", action);
   }
   return action();
 }

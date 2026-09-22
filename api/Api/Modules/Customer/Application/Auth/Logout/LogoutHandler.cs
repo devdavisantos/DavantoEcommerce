@@ -36,19 +36,17 @@ namespace Api.Modules.Customer.Application.Auth.Logout
                 return Result.Failure(RefreshTokenErrors.InvalidToken);
             }
 
+            if (refreshToken.IsExpired() ||
+                refreshToken.IsRevoked() ||
+                refreshToken.IsRevoked())
+            {
+                return Result.Failure(RefreshTokenErrors.InvalidToken);
+            }
+
             await _refreshTokenRepository.RevokeAsync(refreshToken.Id, cancellationToken);
 
             return Result.Success();
         }
-
-        
-
-
-
-
-
-
-
 
     }
 }

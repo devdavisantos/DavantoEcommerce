@@ -83,3 +83,13 @@ a {
 .account-scroll::-webkit-scrollbar-thumb:hover {
   background: #6b7280;
 }
+
+@keyframes session-progress {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}

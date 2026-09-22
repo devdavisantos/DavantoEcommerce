@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS users (
     UNIQUE KEY uq_users_stripe_customer_id (stripe_customer_id),
     UNIQUE KEY uq_users_document (document),
     UNIQUE KEY uq_users_email (email)
-);
+)
+ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS logins (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -39,7 +40,8 @@ CREATE TABLE IF NOT EXISTS logins (
         FOREIGN KEY (user_id)
         REFERENCES users(id)
         ON DELETE RESTRICT
-);
+)
+ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS refresh_tokens (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -62,7 +64,8 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
         FOREIGN KEY (login_id)
         REFERENCES logins(id)
         ON DELETE CASCADE
-);
+)
+ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS addresses (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -95,7 +98,8 @@ CREATE TABLE IF NOT EXISTS addresses (
         FOREIGN KEY (user_id)
         REFERENCES users(id)
         ON DELETE RESTRICT
-);
+)
+ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS account_action_requests (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -121,7 +125,8 @@ CREATE TABLE IF NOT EXISTS account_action_requests (
         FOREIGN KEY (user_id)
         REFERENCES users(id)
         ON DELETE CASCADE
-);
+)
+ENGINE=InnoDB;
 
 -- CREATE TABLE IF NOT EXISTS wishlists(
 --     id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -131,4 +136,5 @@ CREATE TABLE IF NOT EXISTS account_action_requests (
 --     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 --     FOREIGN KEY (user_id) REFERENCES users(id),
 --     -- FOREIGN KEY (catalog_id) REFERENCES catalogs(id)
--- );
+-- )
+-- ENGINE=InnoDB;

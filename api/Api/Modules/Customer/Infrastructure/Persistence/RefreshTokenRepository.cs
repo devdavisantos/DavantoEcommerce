@@ -232,7 +232,13 @@ namespace Api.Modules.Customer.Infrastructure.Persistence
                 transaction: _dbSession.Transaction,
                 cancellationToken: cancellationToken);
 
-            await _dbSession.Connection.ExecuteAsync(command);
+            var affectedRows = await _dbSession.Connection.ExecuteAsync(command);
+
+            if (affectedRows != 1)
+            {
+                throw new InvalidOperationException(
+                    "Refresh token could not be revoked.");
+            }
         }
 
 

@@ -17,7 +17,7 @@ type AuthContextType = {
   logout: () => Promise<void>;
 };
 
-const EXPIRATION_KEY = "lastore-session-expires-at";
+const EXPIRATION_KEY = "customer-session-expires-at";
 
 // Only expiry metadata is stored here, never credentials or tokens.
 function savedExpiration(): number {
@@ -204,6 +204,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               ×
             </button>
           </div>
+
+          <div className="h-1 w-full bg-white/5">
+            <div className="h-full w-full origin-left animate-[session-progress_10s_linear_forwards] bg-deep-orange"/>
+          </div>
         </div>
       )}
       {children}
@@ -218,8 +222,3 @@ export function useAuth() {
   
   return context;
 }
-
-
-
-
-

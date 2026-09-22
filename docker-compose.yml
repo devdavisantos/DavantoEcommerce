@@ -18,8 +18,14 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
       Jwt__SecretKey: ${JWT_SECRET_KEY:?Configure JWT_SECRET_KEY no arquivo .env}
+      AdminJwt__SecretKey: ${ADMIN_JWT_SECRET_KEY:?Configure ADMIN_JWT_SECRET_KEY no arquivo .env}
       ConnectionStrings__DefaultConnection: Server=mysql;Port=3306;Database=${MYSQL_DATABASE};User=root;Password=${MYSQL_ROOT_PASSWORD};
       LoginProxy__KnownProxies__0: &frontend_ip 172.29.240.10
+        - R2__AccountId=${R2_ACCOUNT_ID}
+        - R2__AccessKeyId=${R2_ACCESS_KEY_ID}
+        - R2__SecretAccessKey=${R2_SECRET_ACCESS_KEY}
+        - R2__BucketName=products
+        
     # Port will be removed in production.
     ports:
       - "5000:8080"
@@ -59,6 +65,7 @@ networks:
     ipam:
       config:
         - subnet: 172.29.240.0/24
+
 
 
 
