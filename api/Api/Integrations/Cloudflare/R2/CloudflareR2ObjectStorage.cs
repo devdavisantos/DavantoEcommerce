@@ -49,4 +49,12 @@ public sealed class CloudflareR2ObjectStorage : IObjectStorage
 
         await _s3Client.DeleteObjectAsync(request, cancellationToken);
     }
+
+    public string GetPublicUrl(string key)
+    {
+        var baseUrl = _settings.PublicBaseUrl.TrimEnd('/');
+        var normalizedKey = key.TrimStart('/');
+
+        return $"{baseUrl}/{normalizedKey}";
+    }
 }

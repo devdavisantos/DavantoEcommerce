@@ -11,4 +11,6 @@ public interface IObjectStorage
     Task DeleteAsync(
         string key,
         CancellationToken cancellationToken = default);
+
+    string GetPublicUrl(string key);
 }

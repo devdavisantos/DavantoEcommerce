@@ -33,28 +33,31 @@ namespace Api.Modules.Catalog.Infrastructure.Mappings
             };
         }
 
-        public static ProductCondition ToCondition(string value)
+        public static ProductCondition ToProductCondition(string value)
         {
-            return value switch
+            return value.ToUpperInvariant() switch
             {
                 "NEW" => ProductCondition.New,
                 "USED" => ProductCondition.Used,
-                "REFURBISHED" => ProductCondition.Refurbished,
-                _ => throw new InvalidOperationException(
-                    $"Unsupported product condition '{value}'.")
+                _ => throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "Unsupported product condition.")
             };
         }
 
-        public static ProductStatus ToStatus(string value)
+        public static ProductStatus ToProductStatus(string value)
         {
-            return value switch
+            return value.ToUpperInvariant() switch
             {
                 "DRAFT" => ProductStatus.Draft,
                 "ACTIVE" => ProductStatus.Active,
-                "DISCONTINUED" => ProductStatus.Discontinued,
                 "INACTIVE" => ProductStatus.Inactive,
-                _ => throw new InvalidOperationException(
-                    $"Unsupported product status '{value}'.")
+                "DISCONTINUED" => ProductStatus.Discontinued,
+                _ => throw new ArgumentOutOfRangeException(
+                    nameof(value),
+                    value,
+                    "Unsupported product status.")
             };
         }
     }

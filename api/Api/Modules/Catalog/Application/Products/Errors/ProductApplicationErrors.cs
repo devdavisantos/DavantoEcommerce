@@ -59,5 +59,9 @@ namespace Api.Modules.Catalog.Application.Products.Errors
         public static readonly Error ImageProcessingFailed = new(
             "Catalog.Product.ImageProcessingFailed",
             "Product image could not be processed.");
+
+        public static readonly Error ProductNotFound = new(
+            "Catalog.Product.ProductNotFound",
+            "The product was not found.");
     }
 }

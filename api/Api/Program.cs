@@ -9,10 +9,14 @@ using Api.Modules.Admin.Application.Profile;
 using Api.Modules.Admin.Domain.Repositories;
 using Api.Modules.Admin.Infrastructure.Authentication;
 using Api.Modules.Admin.Infrastructure.Persistence;
-using Api.Modules.Catalog.Application.Products.Create;
+using Api.Modules.Catalog.Application.Abstractions.Images;
 using Api.Modules.Catalog.Application.Abstractions.Persistence;
-using Api.Modules.Catalog.Infrastructure.Persistence;
 using Api.Modules.Catalog.Application.Abstractions.Storage;
+using Api.Modules.Catalog.Application.Products.Create;
+using Api.Modules.Catalog.Application.Products.GetAll;
+using Api.Modules.Catalog.Application.Products.GetById;
+using Api.Modules.Catalog.Infrastructure.Images;
+using Api.Modules.Catalog.Infrastructure.Persistence;
 using Api.Modules.Customer.Application.Abstractions.Authentication;
 using Api.Modules.Customer.Application.Address.Create;
 using Api.Modules.Customer.Application.Address.Delete;
@@ -33,8 +37,6 @@ using Api.Modules.Customer.Application.Profile;
 using Api.Modules.Customer.Domain.Repositories;
 using Api.Modules.Customer.Infrastructure.Authentication;
 using Api.Modules.Customer.Infrastructure.Persistence;
-using Api.Modules.Catalog.Application.Abstractions.Images;
-using Api.Modules.Catalog.Infrastructure.Images;
 using Api.Shared.Database;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -267,6 +269,9 @@ builder.Services.AddScoped<IBrandRepository, BrandRepository>();
 builder.Services.AddScoped<CreateProductHandler>();
 builder.Services.AddScoped<IValidator<CreateProductCommand>, CreateProductValidator>();
 builder.Services.AddScoped<IProductImageProcessor, ProductImageProcessor>();
+builder.Services.AddScoped<GetProductsHandler>();
+builder.Services.AddScoped<IValidator<GetProductsQuery>, GetProductsValidator>();
+builder.Services.AddScoped<GetProductByIdHandler>();
 
 // Controllers / OpenAPI
 

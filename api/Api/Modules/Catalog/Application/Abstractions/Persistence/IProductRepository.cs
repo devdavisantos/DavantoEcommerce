@@ -1,4 +1,5 @@
-﻿using Api.Modules.Catalog.Domain.Entities;
+﻿using Api.Modules.Catalog.Application.Products.GetAll;
+using Api.Modules.Catalog.Domain.Entities;
 
 namespace Api.Modules.Catalog.Application.Abstractions.Persistence
 {
@@ -14,6 +15,14 @@ namespace Api.Modules.Catalog.Application.Abstractions.Persistence
 
         Task CreateAsync(
             Product product,
+            CancellationToken cancellationToken = default);
+
+        Task<PagedResult<ProductListData>> GetAllAsync(
+            ProductListFilter filter,
+            CancellationToken cancellationToken = default);
+
+        Task<ProductDetailsData?> GetByExternalIdAsync(
+            Guid externalId,
             CancellationToken cancellationToken = default);
     }
 }
